@@ -1,0 +1,12 @@
+<div class="flex items-start gap-2 mt-2">
+    <div class="h-7 w-8 border-b border-l border-stone-500 rounded-bl-lg shrink-0"></div>
+    <div class="w-full">
+        <input type="text" value="<%= option.option %>" placeholder="Option" id="option_<%= option.id %>">
+    </div>
+    <button class="bg-rose-600 text-black hover:bg-rose-700 hover:text-black px-5 py-2 rounded-lg shrink-0 text-xl font-bold" onclick="updateOption(`<%= question.id %>`, `<%= option.id %>`)">
+        <i class="far fa-save"></i>
+    </button>
+    <button class="border border-rose-600 text-rose-600 hover:bg-rose-500/30 px-5 py-2 rounded-lg shrink-0 text-xl font-bold" onclick="deleteOption(`<%= question.id %>`,`<%= option.id %>`)">
+        <i class="far fa-times"></i>
+    </button>
+</div>

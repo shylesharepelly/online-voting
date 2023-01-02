@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./css/styles.css" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>My Voting App</title> 
+</head>
+<body>
+    <%- include('header.ejs') %>
+    <div style="width:600px;height:600px;margin-top: 10px;margin-left: auto;margin-right: auto;background-image: linear-gradient(43deg,rgba(157, 255, 242, 0.566),rgba(168, 255, 168, 0.566));border-radius: 40px;padding-top: 50px;">
+       
+
+    <div class="grid grid-cols-6">
+        <div class="col-start-2 col-span-4">
+            <h6 class="py-2 text-2xl px-5 font-bold">Signup as a new Admin</h6>
+            
+            <form action="/admins" method="post">
+                
+                <div class="py-3">
+                    <label for="firstn  +ame">First Name:</label>
+                    <input type="text" name="firstname" class="border border-gray-300 text-black-300 rounded p-2 w-full">
+                </div>
+                <div class="py-3">
+                    <label for="lastname">Last Name:</label>
+                    <input type="text" name="lastname" class="border border-gray-300 text-black-300 rounded p-2 w-full">
+                </div>
+                <div class="py-3">
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" class="border border-gray-300 text-black-300 rounded p-2 w-full">
+                </div>
+                <div class="py-3">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" class="border border-gray-300 text-black-300 rounded p-2 w-full">
+                </div>
+                <div class="py-3 px-20">
+                    <button type="submit" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2">Sign up</button>
+                </div>
+               
+
+            </form>
+
+           
+    </div>
+    </div>
+    </div>
+</body>
+</html>

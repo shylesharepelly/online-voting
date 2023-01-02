@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./css/styles.css" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body style="background-image: linear-gradient(43deg,rgba(157, 255, 242, 0.566),rgba(168, 255, 168, 0.566))">
+    <div>
+        <%- include('head.ejs') %>
+    </div>
+    <div class="grid grid-cols-6">
+        <div class="col-start-3 col-span-2">
+            <h6 class="py-4 text-4xl font-bold">Title of the election </h6>
+            
+                <div class="py-3">
+                    <label for="questions" name="questions" class="text-xl">Your election has (count)  questions in the ballot</label>
+                </div>
+                <a href="#" class="underline text-xl underline-offset-1 text-blue-600">Manage Questions</a>
+                <div class="py-3">
+                    <label for="votors" name="voters" class="text-xl">Your election has (count) registered voters</label>
+                </div>
+                <a href="#" class="underline text-xl underline-offset-1 text-blue-600">Manage Voters</a>
+                <br>
+
+                <br>
+                <a href="#" class="underline text-xl underline-offset-1 text-blue-600">Launch election</a>
+               
+
+        </div>
+        
+
+           
+    </div>
+
+</body>
+</html>
