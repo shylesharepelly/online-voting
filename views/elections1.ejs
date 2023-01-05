@@ -15,21 +15,29 @@
         <%- include('head.ejs') %>
     </div>
     <div class="grid grid-cols-6">
-        <div class="col-start-3 col-span-2">
-            <h6 class="py-4 text-4xl font-bold">Title of the election </h6>
+        <div class="col-start-2 col-span-3">
+            <h6 class="py-4 text-4xl font-bold"><%=title1 %></h6>
+            <h6 class="py-4 text-4xl font-bold"><%=Election1.id %></h6>
             
-                <div class="py-3">
-                    <label for="questions" name="questions" class="text-xl">Your election has (count)  questions in the ballot</label>
+                <label class=" text-xl font-bold text-black-600">Manage Questions</label>
+                
+                <div>
+                    <%- include('addquestion.ejs') %>
                 </div>
-                <a href="#" class="underline text-xl underline-offset-1 text-blue-600">Manage Questions</a>
-                <div class="py-3">
-                    <label for="votors" name="voters" class="text-xl">Your election has (count) registered voters</label>
-                </div>
-                <a href="#" class="underline text-xl underline-offset-1 text-blue-600">Manage Voters</a>
+                
+                
+                <label  class=" text-xl font-bold text-black-600">Manage Voters</label>
                 <br>
+                <div>
+                    <%- include('addvoters.ejs') %>
+                </div>
+                <div>
+                    
+                </div>
+
 
                 <br>
-                <a href="#" class="underline text-xl underline-offset-1 text-blue-600">Launch election</a>
+                <a href="#" class="underline text-xl underline-offset-1 text-blue-600 justify-center">Launch election</a>
                
 
         </div>

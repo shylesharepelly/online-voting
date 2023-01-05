@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       election.belongsTo(models.admin, {
         foreignKey: "adminId",
-        onDelete: "CASCADE",
+        
       });
       election.hasMany(models.question, {
         foreignKey: "electionid",
@@ -22,35 +22,37 @@ module.exports = (sequelize, DataTypes) => {
     }
 
 
-    static async addelection({ title}) {
-      return this.create({ title: title, completed: false});
+    static async addelection({ title,adminId}) {
+      return this.create({ title: title, status: false,adminId:adminId});
     }
 
-    static async ongoing() {
+    static async ongoing(id) {
       return this.findAll({
         where: {
-          completed: false,
+          status: false,
+          adminId: id,
         },
       });
     }
-    static async completed() {
+    static async completed1(id) {
       return this.findAll({
         where: {
-          completed: true,
+          status: true,
+          adminId: id,
         },
       });
     }
-    static async deleteelection(electionid) {
+    static async deleteelection(eid) {
       return this.destroy({
         where: {
-          electionid,
+          id:eid,
           
         },
       });
     }
 
     setCompletionStatus(completed) {
-      return this.update({ completed});
+      return this.update({ status:completed});
     }
 
 
@@ -59,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
   
   election.init({
     title: DataTypes.STRING,
-    status: DataTypes.INTEGER,
+    status: DataTypes.BOOLEAN,
     start: DataTypes.DATE,
     end: DataTypes.DATE
   }, {

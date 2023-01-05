@@ -1,0 +1,55 @@
+<!-- 
+
+<div class="grid grid-cols-6">
+    <div class="col-start-3 col-span-5">
+
+            <div>
+                <% if (data.length==0){ %>
+                    <h5>You haven't registered any voters yet!</h5>
+                    <% } else{ %>
+                        <h4 class="mt-8"><u>List of Voters</u>
+                            <label class="pl-2 pr-2 text-sm text-black-600 bg-gray-400 rounded border-gray-600">
+                                <%- voters.length %>
+                            </label>
+                        </h4>
+                        <ul class="list-disc">
+                            <% voters.forEach((item)=> { %>
+                                <li class="Election-Item">
+                                    <div class="flex w-fit my-2 px-2 py-1 items-center rounded hover:bg-purple-50">
+                                        <label class="ml-2 text-xl text-gray-600 cursor-pointer">
+                                            <%- item.voterId %>
+                                        </label>
+                                        <a href="#" class="ml-2" onclick="removeVoter(<%- item.id %>)">
+                                            Delete Voter
+                                        </a>
+                                    </div>
+                                </li>
+                                <% }) %>
+                        </ul>
+                        <% } %>
+            </div>
+            <div>
+
+
+ -->
+
+
+                <div class="text-red-600 mt-4">
+                    <% if(messages && messages.error && messages.error.length> 0) { %>
+                        <% for(var i=0; i<messages.error.length; i++) { %>
+                            <li>
+                                <%= messages.error[i].message %>
+                            </li>
+                            <% } %>
+                                <% } %>
+                </div>
+                
+                <form action="/voters/<%= voter.id %>" class="flex items-center gap-2 mb-4" method="post">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <input type="text" name="voterId" placeholder="Voter ID" value="<%= voter.voterId %>">
+                    <input type="text" name="password" placeholder="Password" value="<%= voter.password %>">
+                    <button class="bg-rose-600 text-black hover:bg-rose-700 hover:text-black px-5 py-2 rounded-lg shrink-0 text-xl font-bold">Update</button>
+                    <button class="border border-rose-600 text-rose-600 hover:bg-rose-500/30 px-5 py-2 rounded-lg shrink-0 text-xl font-bold" onclick="deleteVoter(`<%= voter.id %>`)">
+                        <i class="far fa-trash-alt"></i>
+                    </button>
+                </form>

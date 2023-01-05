@@ -9,6 +9,52 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<script>
+
+    
+function updateelection(id) {
+          
+          fetch(`/election/${id}`, {
+            method: 'put',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              electionid:id,
+              status: true,
+              //"_csrf": token,
+         
+          
+        })
+          }).then((res) => {
+            if(res.ok)
+            {
+              window.location.reload();
+            }
+          
+          }).catch(err => console.error(err))
+        }
+
+
+
+
+        function deleteelection(id) {
+          console.log(id);
+          fetch(`/election/${id}`, {
+            method: 'delete',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                id:id,
+          //completed: true,
+          //"_csrf": token
+        })
+          }).then((res) => {
+            if(res.ok)
+            {
+              window.location.reload();
+            }
+          }).catch(err => console.error(err))
+        }
+
+</script>
 <body style="background-image: linear-gradient(43deg,rgba(157, 255, 242, 0.566),rgba(168, 255, 168, 0.566))">
     
     <%- include('head.ejs') %>
@@ -16,17 +62,23 @@
     <div>
         <div style="float: left; width: 70%">
         
-    <div class="ml-40 mt-10 px-20 py-10 border border-gray-600 py-10 max-w-md">
+    <div class="ml-20 mt-10 px-20 py-10 border border-gray-600 py-10 max-w-2md">
         <h1 class="font-bold text-2xl">Ongoing Elections</h1>
+        <div>
+            <%- include('loader.ejs',{ data: ongoing1 }) %>
+        </div>
     </div>
-    <div class="ml-40 mt-10 px-20 py-10 border border-gray-600 py-10 max-w-md">
+    <div class="ml-20 mt-10 px-20 py-10 border border-gray-600 py-10 max-w-2md">
         <h1 class="font-bold text-2xl">Completed Elections</h1>
+        <div>
+            <%- include('loader1.ejs', {data: completed1 }) %>
+        </div>
     </div>
         </div>
         <div style="float: right; width: 30%">
             
-            <a href="new" class=" border-gray-600">
-                <button class="rounded bg-green-600 h-10 px-5 text-2xl " >Create a new election</button>
+            <a href="new" class="ml-20 border-gray-600">
+                <button class="rounded bg-green-600 h-10 px-5 mt-2 text-2xl " >Create a new election</button>
             </a>
 
         </div>

@@ -1,0 +1,53 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="/css/styles.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+
+    <title>Voters</title>
+</head>
+
+<body>
+    <script>
+        const deleteVoter = (voterId) => {
+            fetch(`/voters/${voterId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                   
+                }),
+            }).then(async res => {
+                if (res.status !== 200) {
+                    const json = await res.json();
+                    showMessage(json.errors, 'error');
+                } else {
+                    location.reload();
+                }
+            });
+        }
+    </script>
+    
+                    <form action="/voters" method="post">
+                        
+                        <div class="flex gap-2 py-4">
+                            <div>
+                                <input type="text" name="voterid" required placeholder="Voter ID" class="border border-gray-600 rounded text-gray-900 wp-content p-2 text-sm" />
+                            </div>
+                            <div>
+                                <input type="password" name="password" required placeholder="Password" class="border border-gray-600 rounded text-gray-900 wp-content p-2 text-sm" />
+                            </div>
+                            <div>
+                                <button type="submit" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2">Add Voter</button>
+                            </div>
+                        </div>
+                    </form>
+                
+   
+</body>
+</html>

@@ -14,28 +14,43 @@ module.exports = (sequelize, DataTypes) => {
       
       question.belongsTo(models.election, {
         foreignKey: "electionid",
-        onDelete: "CASCADE",
       });
       question.hasMany(models.option, {
         foreignKey: "questionid",
-        as: "options",
       });
 
     }
 
 
-static async addquestion(text,description,electionid){
-  return this.create({question:text,description:description,electionid:electionid});
+static async addquestion(question,description,electionid){
+  return this.create({question:question,description:description,electionid:electionid});
 }
 
-
-
-
-
+static async getall(Id)
+    {
+      return this.findAll({
+        where:{
+          electionid:Id,
+        },
+      });
+    }
   }
+  
   question.init({
-    question: DataTypes.STRING,
-    description: DataTypes.TEXT
+    question:{
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+          notEmpty: true
+            }
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+          notEmpty: true
+            }
+    }
   }, {
     sequelize,
     modelName: 'question',

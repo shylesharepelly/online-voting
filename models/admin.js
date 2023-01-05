@@ -13,10 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       admin.hasMany(models.election, {
         foreignKey: "adminId",
-        as: "elections",
       });
     }
+
   }
+
+
   admin.init({
     firstname: DataTypes.STRING,
     lastname: DataTypes.STRING,

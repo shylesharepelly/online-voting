@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link href="./css/styles.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+</head>
+<body>
+    
+<script>
+    const updateQuestion = (questionId) => {
+        const question = document.getElementById(`question_${questionId}`).value;
+        const description = document.getElementById(`description_${questionId}`).value;
+        const url = `/elections/<%= Election1.id %>/questions/${questionId}`;
+        const data = {
+            
+            question,
+            description
+        };
+        fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(async res => {
+            if (res.status !== 200) {
+                const json = await res.json();
+                showMessage(json.errors, 'error');
+            }else{
+                location.reload();
+                //showMessage([{ message : 'Question updated'}], 'success');
+            }
+        });
+    }
+    const deleteQuestion = (questionId) => {
+        const url = `/elections/<%= Election1.id %>/questions/${questionId}`;
+        const data = {
+          
+        };
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(async res => {
+            if (res.status !== 200) {
+                const json = await res.json();
+                showMessage(json.errors, 'error');
+            } else {
+                location.reload();
+            }
+        });
+    }
+    const updateOption = (questionId, optionId) => {
+        const option = document.getElementById(`option_${optionId}`).value;
+        const url = `/elections/<%= Election1.id %>/questions/${questionId}/options/${optionId}`;
+        const data = {
+            
+            option
+        };
+        fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(async res => {
+            if (res.status !== 200) {
+                const json = await res.json();
+                showMessage(json.errors, 'error');
+            }else{
+                location.reload();
+                //showMessage([{ message : 'Option updated'}], 'success');
+            }
+        });
+    }
+    const deleteOption = (questionId, optionId) => {
+        const url = `/elections/<%= Election1.id %>/questions/${questionId}/options/${optionId}`;
+        const data = {
+           
+        };
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(async res => {
+            if (res.status !== 200) {
+                const json = await res.json();
+                showMessage(json.errors, 'error');
+            } else {
+                location.reload();
+            }
+        });
+    }
+</script>
+
+ Questions
+<br>
+     
+<form action="/addquestion" method="post" class="flex items-center justify-between gap-4">
+
+                <div class="py-2">
+                    <label for="questiontext">Enter the Question</label>
+                    <input type="text" name="questiontext" required class="border border-gray-600 rounded text-gray-900 p-2 w-full" />
+                </div>
+
+                <div class="py-2">
+                    <label for="description">Description</label>
+                    <input  name="description" style="height:100px;font-size:14pt;" type="text" class="border border-gray-600 rounded text-gray-900 p-2 w-full" required>
+                    </textarea> 
+                </div>
+
+                <div class="py-2">
+                    <button type="submit" class=" bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2 text-white" required >Add Question
+                    </button>
+                </div>
+               
+
+        </form>
+        </div>
+        <div>
+            
+   
+
+    
+</body>
+</html>
