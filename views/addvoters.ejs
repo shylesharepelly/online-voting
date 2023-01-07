@@ -34,7 +34,8 @@
     </script>
     
                     <form action="/addvoters/<%=Election1.id %>" method="post">
-                        
+                        <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
+
                         <div class="flex gap-2 py-4">
                             <div>
                                 <input type="text" name="voterid" required placeholder="Voter ID" class="border border-gray-600 rounded text-gray-900 wp-content p-2 text-sm" />

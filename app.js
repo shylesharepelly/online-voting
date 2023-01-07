@@ -17,6 +17,7 @@ const connectEnsureLogin = require('connect-ensure-login');
 app.use(cookieParser("ssh! some secret string"));
 app.set("view engine","ejs");
 const path = require('path');
+app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
 
 const LocalStrategy = require('passport-local');
@@ -88,7 +89,9 @@ passport.deserializeUser((id,done)=>{
 
 app.get('/', async function(request,response){
   console.log(request.user)
-    response.render('index');
+    response.render('index',{
+      csrfToken: request.csrfToken(),
+    });
 });
 
 
@@ -98,6 +101,18 @@ app.post("/users", async (request,response)=>{
     const fname=request.body.firstname
     const lname=request.body.lastname
     const email=request.body.email
+    if (!fname) {
+      request.flash("error", "Please make sure you enter first name");
+      return response.redirect("/signup");
+    }
+    if (!email) {
+      request.flash("error", "Please make sure you enter Email-ID");
+      return response.redirect("/signup");
+    }
+    if (!lname) {
+      request.flash("error", "Please make sure you enter last name");
+      return response.redirect("/signup");
+    }
     
     console.log(hashedpwd)
   try{
@@ -106,7 +121,7 @@ app.post("/users", async (request,response)=>{
       lastname:request.body.lastname,
       email:request.body.email,
       password:hashedpwd,
-      
+     
     });
     request.login(admin1,(err)=>{
       if(err){
@@ -119,7 +134,7 @@ app.post("/users", async (request,response)=>{
   }
   catch(error){
   console.log(error);
-  //request.flash("error", error.message);
+  request.flash("error", error.message);
       return response.redirect("/signup");
   }
   
@@ -150,7 +165,7 @@ app.get('/elections',connectEnsureLogin.ensureLoggedIn(),async (request,response
       newelections1,
       ongoing1,
       completed1,
-      //csrfToken: request.csrfToken(),
+      csrfToken: request.csrfToken(),
     });
   }
   else{
@@ -220,8 +235,8 @@ app.post("/elections/new", async (request, response)=> {
   try {
     const Election1=await election.addelection({
       title:request.body.title,
-      adminId:loggedInUser
-
+      adminId:loggedInUser,
+      
     });
     
     //return response.redirect("/elections1");
@@ -233,7 +248,33 @@ app.post("/elections/new", async (request, response)=> {
 });
 
 
-
+app.get("/elections1/:id/launch",connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+  const Election1 = await election.findByPk(request.params.id);
+  const questions = await question.getall(request.params.id);
+  const options = await option.findAll({ where: { questionid: questions } });
+  const voters1 = await voters.findAll({ where: { electionid: request.params.id } });
+  const questionscount = await question.countquestions(
+    request.params.id
+  );
+  const voterscount = await voters.countvoters(request.params.id);
+  try {
+    const updatedelection = await Election1.setLaunchedStatus(true);
+    response.render("result", {
+      id: request.params.id,
+      title1:request.params.id.title,
+        Election1,
+        questions,
+        options,
+         voters1,
+        questionscount,
+        voterscount, 
+  })
+}
+   catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
 
 app.get('/elections1', connectEnsureLogin.ensureLoggedIn(),async function(request,response){
   console.log(request.params.id)
@@ -247,12 +288,14 @@ app.get('/elections1', connectEnsureLogin.ensureLoggedIn(),async function(reques
   const voterscount = await voters.countvoters(request.params.id);
   response.render("elections1", {
     id: request.params.id,
+    title1: request.params.id.title,
       elections,
       questions,
       options,
        voters1,
       questionscount,
       voterscount, 
+      csrfToken: request.csrfToken(),
        
   
 });
@@ -279,7 +322,7 @@ app.get('/elections1/:id', connectEnsureLogin.ensureLoggedIn(),async function(re
        voters1,
       questionscount,
       voterscount, 
-       
+      csrfToken: request.csrfToken(),
   
 });
 });
@@ -304,7 +347,7 @@ app.get('/result/:id', connectEnsureLogin.ensureLoggedIn(),async function(reques
        voters1,
       questionscount,
       voterscount, 
-       
+      csrfToken: request.csrfToken(),
   
 });
 });
@@ -358,7 +401,7 @@ app.get('/elections1/:id/voters',connectEnsureLogin.ensureLoggedIn(), async func
     id:request.params.id,
     election1,
     data:voters1, 
-      
+    
   
 });
 });
@@ -384,7 +427,7 @@ app.delete("/elections1/:id/voters", connectEnsureLogin.ensureLoggedIn(), async 
 
 
 app.get('/new',connectEnsureLogin.ensureLoggedIn(),function(req,res){
-    res.render('new');
+    res.render('new',{csrfToken: req.csrfToken()});
 });
 
 
@@ -436,7 +479,7 @@ app.get('/elections1/:id/question',connectEnsureLogin.ensureLoggedIn(), async fu
     id:request.params.id,
     election1,
     data:questions1, 
-      
+    
   
 });
 });
@@ -479,30 +522,9 @@ app.delete("/elections1/:id/:questionid", connectEnsureLogin.ensureLoggedIn(), a
   }
 
 });
-
-
-// app.get("/elections1/:id/questions", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
-//   const Election = await election.findByPk(request.params.id);
-//   const Questions = await question.findAll({ where: { electionId: request.params.id } });
-//   if (Election.status == false) {
-//       response.render("question", {
-//            Election, Questions
-//       });
-//   }
-//   else {
-//       return response.redirect("/elections1");
-//   }
-
-// });
-
-
-
-
-// app.get('/index1',function(req,res){
-//     res.render('index1');
-// });
+ 
 app.get('/signup',function(req,res){
-    res.render('signup');
+    res.render('signup',{csrfToken: req.csrfToken()});
 });
 
 app.get("/signout",(request,response,next)=>{
@@ -516,11 +538,11 @@ app.get("/signout",(request,response,next)=>{
 })
 
 app.get('/admin-login',function(req,res){
-    res.render('admin-login');
+    res.render('admin-login',{csrfToken:req.csrfToken()});
 });
 
 app.get('/user-login',function(req,res){
-    res.render('user-login');
+    res.render('user-login',{csrfToken:req.csrfToken()});
 });
 
 

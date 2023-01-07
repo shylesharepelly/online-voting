@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
     static async ongoing(id) {
       return this.findAll({
         where: {
-          
+          status:false,
           launched:true,
           adminId: id,
         },

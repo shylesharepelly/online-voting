@@ -12,29 +12,37 @@
 <body>
     <%- include('header.ejs') %>
     <div style="width:600px;height:600px;margin-top: 10px;margin-left: auto;margin-right: auto;background-image: linear-gradient(43deg,rgba(157, 255, 242, 0.566),rgba(168, 255, 168, 0.566));border-radius: 40px;padding-top: 50px;">
-       
+        <div>
+                
+            <% if(messages && messages.error && messages.error.length > 0)  { %>
+                <% for(var i=0; i<messages.error.length; i++) { %>
+                        <li> <%= messages.error[i] %></li>
+                <% } %>
+              <% } %>
+        </div>
 
     <div class="grid grid-cols-6">
         <div class="col-start-2 col-span-4">
             <h6 class="py-2 text-2xl px-5 font-bold">Signup as a new Admin</h6>
             
             <form action="/users" method="post">
-                
+                <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
+
                 <div class="py-3">
                     <label for="firstname">First Name:</label>
-                    <input type="text" name="firstname" class="border border-gray-300 text-black-300 rounded p-2 w-full">
+                    <input type="text" required name="firstname" class="border border-gray-300 text-black-300 rounded p-2 w-full">
                 </div>
                 <div class="py-3">
                     <label for="lastname">Last Name:</label>
-                    <input type="text" name="lastname" class="border border-gray-300 text-black-300 rounded p-2 w-full">
+                    <input type="text" required  name="lastname" class="border border-gray-300 text-black-300 rounded p-2 w-full">
                 </div>
                 <div class="py-3">
                     <label for="email">Email:</label>
-                    <input type="email" name="email" class="border border-gray-300 text-black-300 rounded p-2 w-full">
+                    <input type="email" required name="email" class="border border-gray-300 text-black-300 rounded p-2 w-full">
                 </div>
                 <div class="py-3">
                     <label for="password">Password:</label>
-                    <input type="password" name="password" class="border border-gray-300 text-black-300 rounded p-2 w-full">
+                    <input type="password" required name="password" class="border border-gray-300 text-black-300 rounded p-2 w-full">
                 </div>
                 <div class="py-3 px-20">
                     <button type="submit" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2">Sign up</button>

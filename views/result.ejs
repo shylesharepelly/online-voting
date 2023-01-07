@@ -17,6 +17,9 @@
     <div class="grid grid-cols-6">
         <div class="col-start-2 col-span-3">
             <h6 class="py-4 text-4xl font-bold"><%=title1 %></h6>
+            <h6>
+                public url:
+            </h6>
             
                 <label class=" text-xl font-bold text-black-600">Manage Questions</label>
                 
@@ -25,11 +28,6 @@
                 </div>
                 count: <%=voterscount%>
                 
-                <label  class=" text-xl font-bold text-black-600">Manage Voters</label>
-                <br>
-                <div>
-                    <%- include('addvoters.ejs') %>
-                </div>
                 
                 <a href="/elections1/<%=Election1.id %>/voters" class="underline text-xl underline-offset-1 text-blue-600 justify-center">manage voters</a>
 

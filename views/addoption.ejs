@@ -43,7 +43,8 @@
             <% } %>
             </div>
             <form action="/elections1/:id/options/${optionid}" method="post" onsubmit="validate()">
-              
+              <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
+
                 <div class="flex gap-2 p-4">
                     <div class="flex-auto">
                         <input type="text" title="Enter atleast 2 characters.Remove space in the beginning" pattern="([^\s][A-z0-9À-ž\s]+)" name="title" placeholder="whats next?" class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required/>

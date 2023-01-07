@@ -13,6 +13,7 @@
     
  
 <form action="/addquestion/<%=Election1.id %>" method="post" class="flex items-center justify-between gap-4">
+    <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
 
                 <div class="py-2">
                     <label >Enter the Question</label>

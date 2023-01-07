@@ -21,7 +21,7 @@ function updateelection(id) {
               electionid:id,
               status: true,
               
-              //"_csrf": token,
+              "_csrf": token,
          
           
         })
@@ -43,7 +43,7 @@ function launchedelection(id) {
               electionid:id,
               launched: true,
               
-              //"_csrf": token,
+              "_csrf": token,
          
           
         })
@@ -66,7 +66,7 @@ function launchedelection(id) {
             body: JSON.stringify({
                 id:id,
           //completed: true,
-          //"_csrf": token
+          "_csrf": token
         })
           }).then((res) => {
             if(res.ok)
