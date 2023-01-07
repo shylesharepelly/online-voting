@@ -23,6 +23,8 @@ module.exports = (sequelize, DataTypes) => {
 
 
 static async addquestion(question,description,electionid){
+  console.log("add,", question);
+  console.log("add,", description);
   return this.create({question:question,description:description,electionid:electionid});
 }
 
@@ -34,7 +36,25 @@ static async getall(Id)
         },
       });
     }
+
+    static async countquestions(electionid) {
+      return this.count({
+        where: {
+          electionid,
+        },
+      });
+    }
+    static async deletequestion(id) {
+      return this.destroy({
+        where: {
+          id: id,
+        }
+      });
+    }
+
+
   }
+  
   
   question.init({
     question:{
@@ -44,13 +64,8 @@ static async getall(Id)
           notEmpty: true
             }
     },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-          notEmpty: true
-            }
-    }
+    description: DataTypes.STRING,
+    
   }, {
     sequelize,
     modelName: 'question',

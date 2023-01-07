@@ -141,11 +141,13 @@ app.post(
 app.get('/elections',connectEnsureLogin.ensureLoggedIn(),async (request,response)=>{
 
   const loggedInUser = request.user.id;
+  const newelections1 = await election.newelections(loggedInUser);
   const ongoing1 = await election.ongoing(loggedInUser);
   const completed1 = await election.completed1(loggedInUser);
 
   if (request.accepts("html")) {
     response.render("elections", {
+      newelections1,
       ongoing1,
       completed1,
       //csrfToken: request.csrfToken(),
@@ -153,6 +155,7 @@ app.get('/elections',connectEnsureLogin.ensureLoggedIn(),async (request,response
   }
   else{
     response.json({
+      newelections1,
       ongoing1,
       completed1,
     })
@@ -174,7 +177,16 @@ app.put("/election/:id",connectEnsureLogin.ensureLoggedIn(), async (request, res
     return response.status(422).json(error);
   }
 });
-
+app.put("/election/:id",connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+  const Election1 = await election.findByPk(request.params.id);
+  try {
+    const updatedelection = await Election1.setLaunchedStatus(true);
+    return response.json(updatedelection);
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
 
 app.delete("/election/:id",connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
   const Election1 = await election.findByPk(request.params.id);
@@ -200,20 +212,20 @@ app.get("/election/:id",connectEnsureLogin.ensureLoggedIn(), async function (req
   }
 });
 
-app.post("/elections/new",connectEnsureLogin.ensureLoggedIn(), async (request, response)=> {
+app.post("/elections/new", async (request, response)=> {
   const title1= request.body.title;
   const loggedInUser = request.user.id;
+  //const loggedInUser = request.body.id;
+
   try {
     const Election1=await election.addelection({
       title:request.body.title,
       adminId:loggedInUser
 
     });
+    
     //return response.redirect("/elections1");
-    response.render("elections1", {
-      Election1,
-      title1,
- });
+    response.redirect("/elections");
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
@@ -224,47 +236,106 @@ app.post("/elections/new",connectEnsureLogin.ensureLoggedIn(), async (request, r
 
 
 app.get('/elections1', connectEnsureLogin.ensureLoggedIn(),async function(request,response){
-  
+  console.log(request.params.id)
   const elections = await election.findByPk(request.params.id);
   const questions = await question.getall(elections);
   const options = await option.findAll({ where: { questionid: questions } });
-  const voters = await voter.findAll({ where: { electionid: elections } });
-  
+  const voters1 = await voters.findAll({ where: { electionid: elections } });
+  const questionscount = await question.countquestions(
+    request.params.id
+  );
+  const voterscount = await voters.countvoters(request.params.id);
   response.render("elections1", {
+    id: request.params.id,
       elections,
       questions,
       options,
-       voters, 
+       voters1,
+      questionscount,
+      voterscount, 
        
   
 });
 });
 
 
-app.post("/voters", connectEnsureLogin.ensureLoggedIn(),async (request,response)=>{
+
+app.get('/elections1/:id', connectEnsureLogin.ensureLoggedIn(),async function(request,response){
+  console.log(request.params.id)
+  const Election1 = await election.findByPk(request.params.id);
+  const questions = await question.getall(request.params.id);
+  //const options = await option.findAll({ where: { questionid: questions } });
+  const voters1 = await voters.findAll({ where: { electionid: request.params.id } });
+  const questionscount = await question.countquestions(
+    request.params.id
+  );
+  const voterscount = await voters.countvoters(request.params.id);
+  response.render("elections1", { 
+    id: request.params.id,
+    title1:request.params.id.title,
+      Election1,
+      questions,
+     // options,
+       voters1,
+      questionscount,
+      voterscount, 
+       
+  
+});
+});
+
+
+app.get('/result/:id', connectEnsureLogin.ensureLoggedIn(),async function(request,response){
+  console.log(request.params.id)
+  const Election1 = await election.findByPk(request.params.id);
+  const questions = await question.getall(request.params.id);
+  const options = await option.findAll({ where: { questionid: questions } });
+  const voters1 = await voters.findAll({ where: { electionid: request.params.id } });
+  const questionscount = await question.countquestions(
+    request.params.id
+  );
+  const voterscount = await voters.countvoters(request.params.id);
+  response.render("result", {
+    id: request.params.id,
+    title1:request.params.id.title,
+      Election1,
+      questions,
+      options,
+       voters1,
+      questionscount,
+      voterscount, 
+       
+  
+});
+});
+
+
+
+app.post("/addvoters/:id", async (request,response)=>{
 
   const hashedpwd = await bcrypt.hash(request.body.password,saltRounds)
   
   const email=request.body.voterid
-  const election1 = await election.findByPk(request.params.elections);
+  const Election1 = await election.findByPk(request.params.id);
   console.log(email)
-  console.log("newelec", election1)
+  console.log("newelec", request.params.id)
+  
 try{
   
-  const voter1 = await voters.addvoters({
+  const voters1 = await voters.addvoters({
     email:email,
     password:hashedpwd,
     electionid:request.params.id,
     
   });
   
-//   if (request.accepts("html")) {
-//     console.log("Html Request");
-//     return response.redirect("/voters");
-// }
-// else {
-//     return response.json(election1);
-// }
+  if (request.accepts("html")) {
+    console.log("Html Request");
+    return response.redirect(`/elections1/${request.params.id}/voters`);
+}
+else {
+    return response.json(voters1);
+}
   
 }
 catch(error){
@@ -275,23 +346,28 @@ request.flash("error", error.message);
 
 });
 
-app.get('/voters',connectEnsureLogin.ensureLoggedIn(), async function(request,response){
+app.get('/elections1/:id/voters',connectEnsureLogin.ensureLoggedIn(), async function(request,response){
   const election1 = await election.findByPk(request.params.id);
-  const voter1 = await voter.findAll({ where: { electionid: election1.id } });
+  const voters1 = await voters.findAll({ where: { electionid: request.params.id } });
+  //const elections = await election.findByPk(request.params.id);
+  //const questions = await question.getall(elections);
+  //const options = await option.findAll({ where: { questionid: questions } });
+  //const voters1 = await voters.findAll({ where: { electionid: elections } });
   
   response.render("voters", {
+    id:request.params.id,
     election1,
-       voter1, 
+    data:voters1, 
       
   
 });
 });
 
 
-app.delete("/voters", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
+app.delete("/elections1/:id/voters", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
   console.log("We have to delete a Voter with ID: ", request.params.id);
   // First, we have to query our database to delete a Todo by ID.
-  const voter1 = await voter.findByPk(request.params.id);
+  const voter1 = await voters.findByPk(request.params.id);
   try {
       if (voter1 == null)
           return response.send(false);
@@ -312,37 +388,112 @@ app.get('/new',connectEnsureLogin.ensureLoggedIn(),function(req,res){
 });
 
 
-app.post("/addquestion",connectEnsureLogin.ensureLoggedIn(),async (request, response)=> {
-  const electionID = await election.findByPk(request.params.id);
-  console.log("id ",electionID);
+
+app.post("/addvoters/:id", async (request,response)=>{
+
+  const hashedpwd = await bcrypt.hash(request.body.password,saltRounds)
+  
+  const email=request.body.voterid
+  const Election1 = await election.findByPk(request.params.id);
+  console.log(email)
+  console.log("newelec", request.params.id)
+  
+try{
+  
+  const voters1 = await voters.addvoters({
+    email:email,
+    password:hashedpwd,
+    electionid:request.params.id,
+    
+  });
+  
+  if (request.accepts("html")) {
+    console.log("Html Request");
+    return response.redirect(`/elections1/${request.params.id}/voters`);
+}
+else {
+    return response.json(voters1);
+}
+  
+}
+catch(error){
+console.log(error);
+request.flash("error", error.message);
+// return response.redirect("/elections1");
+}
+
+});
+
+app.get('/elections1/:id/question',connectEnsureLogin.ensureLoggedIn(), async function(request,response){
+  const election1 = await election.findByPk(request.params.id);
+  const questions1 = await question.findAll({ where: { electionid: request.params.id } });
+  //const elections = await election.findByPk(request.params.id);
+  //const questions = await question.getall(elections);
+  //const options = await option.findAll({ where: { questionid: questions } });
+  //const voters1 = await voters.findAll({ where: { electionid: elections } });
+  
+  response.render("question", {
+    id:request.params.id,
+    election1,
+    data:questions1, 
+      
+  
+});
+});
+
+
+
+
+app.post("/addquestion/:id",connectEnsureLogin.ensureLoggedIn(),async (request, response)=> {
+  //const electionID = await election.findByPk(request.params.id);
+ // console.log("id ",electionID);
   console.log("id2", request.params.id);
-  const Questions = await question.findAll({ where: { electionId: electionID } });
+  //const Questions = await question.findAll({ where: { electionId: electionID } });
   try {
-    await question.addquestion({
-      question:request.body.questiontext,
-      description:request.body.description,
-      electionid: request.params.id,
-    });
-    return response.redirect("/elections1");
+    await question.addquestion(
+      request.body.questiontext,
+      request.body.description,
+      request.params.id);
+    return response.redirect(`/elections1/${request.params.id}/question`);
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
   }
 });
 
-app.get("/questions", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
-  const Election = await election.findByPk(request.params.id);
-  const Questions = await question.findAll({ where: { electionId: Election.id } });
-  if (Election.status == false) {
-      response.render("question", {
-           Election, Questions
-      });
-  }
-  else {
-      return response.redirect("/elections1");
+
+app.delete("/elections1/:id/:questionid", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
+  console.log("We have to delete a question  with ID: ", request.params.questionid);
+  // First, we have to query our database to delete a Todo by ID.
+  const question1 = await question.findByPk(request.params.questionid);
+  try {
+      if (question1 == null)
+          return response.send(false);
+      else {
+        question.deletequestion(request.params.questionid);
+          return response.send(true);
+      }
+  } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
   }
 
 });
+
+
+// app.get("/elections1/:id/questions", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
+//   const Election = await election.findByPk(request.params.id);
+//   const Questions = await question.findAll({ where: { electionId: request.params.id } });
+//   if (Election.status == false) {
+//       response.render("question", {
+//            Election, Questions
+//       });
+//   }
+//   else {
+//       return response.redirect("/elections1");
+//   }
+
+// });
 
 
 

@@ -23,13 +23,27 @@ module.exports = (sequelize, DataTypes) => {
 
 
     static async addelection({ title,adminId}) {
-      return this.create({ title: title, status: false,adminId:adminId});
+      return this.create({ title: title, status: false,launched:false,adminId:adminId});
     }
+
+
+
+    static async newelections(id) {
+      return this.findAll({
+        where: {
+          status: false,
+          launched:false,
+          adminId: id,
+        },
+      });
+    }
+
 
     static async ongoing(id) {
       return this.findAll({
         where: {
-          status: false,
+          
+          launched:true,
           adminId: id,
         },
       });
@@ -38,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
       return this.findAll({
         where: {
           status: true,
+          
           adminId: id,
         },
       });
@@ -50,7 +65,9 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
     }
-
+    setLaunchedStatus(completed) {
+      return this.update({ launched:completed});
+    }
     setCompletionStatus(completed) {
       return this.update({ status:completed});
     }
@@ -63,7 +80,8 @@ module.exports = (sequelize, DataTypes) => {
     title: DataTypes.STRING,
     status: DataTypes.BOOLEAN,
     start: DataTypes.DATE,
-    end: DataTypes.DATE
+    end: DataTypes.DATE,
+    launched:DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'election',

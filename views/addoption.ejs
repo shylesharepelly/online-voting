@@ -12,34 +12,13 @@
       
         var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         
-        function updateTodo(id,status) {
-          const bool = document.querySelector(`#todo-checkbox-${id}`).checked
-          fetch(`/elections/${id}`, {
-            method: 'put',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              completed: status,
-              "_csrf": token,
-         
-          
-        })
-          }).then((res) => {
-            if(res.ok)
-            {
-              window.location.reload();
-            }
-          
-          }).catch(err => console.error(err))
-        }
-        
-        function deleteoption(id) {
+        function deleteoption(optionid) {
           console.log(id);
-          fetch(`/elections/${id}`, {
+          fetch(`/elections1/:id/${optionid}`, {
             method: 'delete',
             headers: { 'Content-Type': 'application/json'},
             //body: JSON.stringify({
-          //completed: true,
-          //"_csrf": token
+          
        // })
           }).then((res) => {
             if(res.ok)
@@ -63,7 +42,7 @@
               <% } %>
             <% } %>
             </div>
-            <form action="/options" method="post" onsubmit="validate()">
+            <form action="/elections1/:id/options/${optionid}" method="post" onsubmit="validate()">
               
                 <div class="flex gap-2 p-4">
                     <div class="flex-auto">
@@ -79,10 +58,7 @@
             
         </div>
         <div>
-          <%- include('todo.ejs', {title: "Overdue" , data: overdue}) %>
-          <%- include('todo.ejs', {title: "Due Today" , data: dueToday}) %>
-          <%- include('todo.ejs', {title: "Due Later" , data: dueLater}) %>
-          <%- include('todo.ejs', {title: "Completed items" , data: completed}) %>
+         
         </div>
         
         

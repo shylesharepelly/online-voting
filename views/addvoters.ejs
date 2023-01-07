@@ -14,7 +14,7 @@
 <body>
     <script>
         const deleteVoter = (voterId) => {
-            fetch(`/voters/${voterId}`, {
+            fetch(`/elections1/:id/${voterId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -33,7 +33,7 @@
         }
     </script>
     
-                    <form action="/voters" method="post">
+                    <form action="/addvoters/<%=Election1.id %>" method="post">
                         
                         <div class="flex gap-2 py-4">
                             <div>
@@ -47,6 +47,10 @@
                             </div>
                         </div>
                     </form>
+
+                    <div>
+                        
+                    </div>
                 
    
 </body>

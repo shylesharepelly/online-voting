@@ -18,8 +18,17 @@ module.exports = (sequelize, DataTypes) => {
 
     static async addvoters(electionid,email,password){
       // const hashedpassword = await bcrypt.hash(password, saltRounds);
-      console.log("voter ", email)
-      return this.create({email:email,password:password,electionid:electionid})
+      console.log("email ", electionid.email);
+      console.log("password ", electionid.password);
+      console.log("electionid ", electionid.electionid);
+      return this.create({email:electionid.email,password:electionid.password,electionid:electionid.electionid})
+    }
+    static countvoters(electioniD) {
+      return this.count({
+        where: {
+          electionid:electioniD,
+        },
+      });
     }
 
     static async deletevoter(email) {

@@ -17,25 +17,30 @@
     <div class="grid grid-cols-6">
         <div class="col-start-2 col-span-3">
             <h6 class="py-4 text-4xl font-bold"><%=title1 %></h6>
-            <h6 class="py-4 text-4xl font-bold"><%=Election1.id %></h6>
-            
-                <label class=" text-xl font-bold text-black-600">Manage Questions</label>
+                <div>
+                    <h2>There are  <%=questionscount%> questions</h2>
+                </div>
                 
                 <div>
-                    <%- include('addquestion.ejs') %>
+                    <%- include('addquestion.ejs',{Election1}) %>
+                </div>
+                <div>
+                    <a href="/elections1/<%=Election1.id %>/question" class="underline text-xl underline-offset-1 text-blue-600 justify-center">manage voters</a>
+
+                </div>
+                <div>
+                    <h2>There are <%=voterscount%> voters</h2>
                 </div>
                 
                 
-                <label  class=" text-xl font-bold text-black-600">Manage Voters</label>
-                <br>
                 <div>
                     <%- include('addvoters.ejs') %>
                 </div>
                 <div>
-                    
+                    <a href="/elections1/<%=Election1.id %>/voters" class="underline text-xl underline-offset-1 text-blue-600 justify-center">manage voters</a>
+
                 </div>
-
-
+                
                 <br>
                 <a href="#" class="underline text-xl underline-offset-1 text-blue-600 justify-center">Launch election</a>
                

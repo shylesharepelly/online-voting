@@ -14,12 +14,35 @@
     
 function updateelection(id) {
           
-          fetch(`/election/${id}`, {
+  fetch(`/election/${id}`, {
             method: 'put',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               electionid:id,
               status: true,
+              
+              //"_csrf": token,
+         
+          
+        })
+          }).then((res) => {
+            if(res.ok)
+            {
+              window.location.reload();
+            }
+          
+          }).catch(err => console.error(err))
+  }
+
+function launchedelection(id) {
+          
+          fetch(`/election/${id}`, {
+            method: 'put',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              electionid:id,
+              launched: true,
+              
               //"_csrf": token,
          
           
@@ -32,7 +55,6 @@ function updateelection(id) {
           
           }).catch(err => console.error(err))
         }
-
 
 
 
@@ -61,6 +83,12 @@ function updateelection(id) {
 
     <div>
         <div style="float: left; width: 70%">
+          <div class="ml-20 mt-10 px-20 py-10 border border-gray-600 py-10 max-w-2md">
+            <h1 class="font-bold text-2xl">New Elections</h1>
+            <div>
+                <%- include('loader2.ejs',{ data: newelections1 }) %>
+            </div>
+        </div>
         
     <div class="ml-20 mt-10 px-20 py-10 border border-gray-600 py-10 max-w-2md">
         <h1 class="font-bold text-2xl">Ongoing Elections</h1>
