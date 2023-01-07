@@ -6,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Voting Platform</title>
     
-    
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <script>
-
+var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        
     
 function updateelection(id) {
           
@@ -36,7 +38,7 @@ function updateelection(id) {
 
 function launchedelection(id) {
           
-          fetch(`/election/${id}`, {
+          fetch(`/elections/${id}`, {
             method: 'put',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

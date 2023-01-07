@@ -101,18 +101,25 @@ app.post("/users", async (request,response)=>{
     const fname=request.body.firstname
     const lname=request.body.lastname
     const email=request.body.email
+    const pwd = request.body.password
     if (!fname) {
       request.flash("error", "Please make sure you enter first name");
-      return response.redirect("/signup");
-    }
-    if (!email) {
-      request.flash("error", "Please make sure you enter Email-ID");
       return response.redirect("/signup");
     }
     if (!lname) {
       request.flash("error", "Please make sure you enter last name");
       return response.redirect("/signup");
     }
+    if (!email) {
+      request.flash("error", "Please make sure you enter Email-ID");
+      return response.redirect("/signup");
+    }
+    if (!pwd) {
+      request.flash("error", "Please make sure you enter password");
+      return response.redirect("/signup");
+    }
+    
+    
     
     console.log(hashedpwd)
   try{
@@ -192,7 +199,7 @@ app.put("/election/:id",connectEnsureLogin.ensureLoggedIn(), async (request, res
     return response.status(422).json(error);
   }
 });
-app.put("/election/:id",connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+app.put("/elections/:id",connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
   const Election1 = await election.findByPk(request.params.id);
   try {
     const updatedelection = await Election1.setLaunchedStatus(true);
