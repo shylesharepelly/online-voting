@@ -1,5 +1,16 @@
-
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+</head>
+<body  style="background-image: linear-gradient(43deg,rgba(157, 255, 242, 0.566),rgba(168, 255, 168, 0.566))">
+    <div>
+        <%- include('head.ejs') %>
+    </div>
 <div class="grid grid-cols-6">
     <div class="col-start-3 col-span-5">
         <a href="/elections1/<%= id%>" class="underline text-xl underline-offset-1 text-blue-600 justify-center">Go back</a>
@@ -7,11 +18,12 @@
                 <% if (data.length==0){ %>
                     <h5>You haven't registered any voters yet!</h5>
                     <% } else{ %>
-                        <h4 class="mt-8"><u>List of Voters</u>
-                            <label class="pl-2 pr-2 text-sm text-black-600 bg-gray-400 rounded border-gray-600">
-                                <%- data.length %>
-                            </label>
+                        <h4 class="mt-8 text-2xl"><u>List of Voters</u>
+                            
                         </h4>
+                        <label class="pl-2 pr-2 text-2xl text-black-600  rounded border-gray-600">
+                           There are <%- data.length %> voters
+                        </label>
                         <ul class="list-disc">
                             <% for(var i=0; i<data.length; i++) {%>
                                 <li class="Election-Item">
@@ -35,6 +47,8 @@
                     
                 </div>
     </div>
-
+</div>
+</body>
+</html>
 
 
