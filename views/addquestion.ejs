@@ -4,14 +4,35 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <meta name="csrf-token" content="<%= csrfToken %>" />
     <link href="./css/styles.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     
 </head>
 <body>
     
- 
+ <script>
+    
+
+    function deletequestion(id,questionid) {
+          console.log("qui",questionid);
+          fetch(`/elections1/${id}/${questionid}`, {
+            method: 'delete',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                id:id,
+                questionid:questionid,
+          //completed: true,
+          "_csrf": token
+        })
+          }).then((res) => {
+            if(res.ok)
+            {
+              window.location.reload();
+            }
+          }).catch(err => console.error(err))
+        }
+ </script>
 <form action="/addquestion/<%=Election1.id %>" method="post" class="flex items-center justify-between gap-4">
     <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
 

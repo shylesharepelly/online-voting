@@ -44,10 +44,11 @@ static async getall(Id)
         },
       });
     }
-    static async deletequestion(id) {
+    static async deletequestion1(id,eid) {
       return this.destroy({
         where: {
           id: id,
+          electionid:eid
         }
       });
     }

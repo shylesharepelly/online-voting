@@ -6,20 +6,66 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="csrf-token" content="<%= csrfToken %>" />
     
 </head>
 <body  style="background-image: linear-gradient(43deg,rgba(157, 255, 242, 0.566),rgba(168, 255, 168, 0.566))">
+    <script>
+      
+        var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        
+        function deleteoption(optionid) {
+          console.log(id);
+          fetch(`/elections1/:id/${optionid}`, {
+            method: 'delete',
+            headers: { 'Content-Type': 'application/json'},
+            //body: JSON.stringify({
+          
+       // })
+          }).then((res) => {
+            if(res.ok)
+            {
+              window.location.reload();
+            }
+          }).catch(err => console.error(err))
+        }
+
+
+
+
+    function deletequestion(id,questionid) {
+          console.log("qui",questionid);
+          fetch(`/elections1/${id}/${questionid}`, {
+            method: 'delete',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                id:id,
+                questionid:questionid,
+          //completed: true,
+          "_csrf": token
+        })
+          }).then((res) => {
+            if(res.ok)
+            {
+              window.location.reload();
+            }
+          }).catch(err => console.error(err))
+        }
+
+
+      </script>
+    
     <div>
         <%- include('head.ejs') %>
     </div>
     <div class="grid grid-cols-6">
         <div class="col-start-1 col-span-5">
-            <button class="bg-green-600 text-white px-5 py-2 rounded font-medium py-1.5"><a href="/elections1/<%= id%>" class="text-xl justify-center">Go back</a></button>
+            <button class="bg-green-600 text-white px-5 ml-5 py-2 rounded font-medium py-1.5"><a href="/elections1/<%= id%>" class="text-xl justify-center">Go back</a></button>
                 <div>
                     <% if (data.length==0){ %>
                         <h5>You haven't added any questions yet!</h5>
                         <% } else{ %>
-                            <h4 class=" font-bold col-start-3 text-2xl">List of questions</h4>
+                            <h4 class=" font-bold px-5 py-3 col-start-3 text-2xl">List of questions:</h4>
                             <label class="pl-6 pr-2 text-xl text-black-600  rounded border-gray-600">
                                     There are <%- data.length %> questions
                                 </label>
@@ -27,25 +73,65 @@
                                 <% for(var i=0; i<data.length; i++) {%>
                                     <li class="Election-Item">
                                         <div class="flex gap-2 p-4">
-                                            <div class="flex-auto">
-                                                        question:
-                                                      
-                                                    <div class="border border-gray-600 rounded text-gray-900 p-2 ">
-                                                        <%= data[i].question %>
-                                                    </div>
+                                            <div class="flex-auto">question:
+                                                <input type="text" name="question" placeholder="New Question" class="w-full" id="<%= data[i].id %>" value="<%= data[i].question %>">
                                                 
                                             </div>
+                                             
                                         
-                                        <div class="flex-auto " >
-                                            
-                                                   description:
-                                                <div class="border border-gray-600 rounded text-gray-900 p-2 ">
-                                                <%= data[i].description %>
-                                            </div>
+                                        <div class="flex-auto " >description:
+                                            <input type="text" name="description" placeholder="New description" class="w-full" id="<%= data[i].id %>" value="<%= data[i].description %>">
+
                                         </div>
+                                        <div class="py-5 px-5">
+                                            <button  name="delete" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="" onclick="deletequestion(<%= id%>,<%= data[i].id %>)">Delete</a></button>
+                                        </div> 
+                                        <div class="py-5 px-5">
+                                            <button  name="update" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="" onclick="updatequestion(<%= data[i].id %>)">Update</a></button>
+                                        </div> 
+                                    </div>  
                                         
-                                          
-                                        
+                                        <div class="col-start-2">
+
+                                <div class="grid grid-cols-6">
+                                <div class="col-start-3 col-span-2">
+          
+          <div>
+            
+          <% if(messages && messages.error && messages.error.length > 0)  { %>
+            <% for(var i=0; i<messages.error.length; i++) { %>
+                    <li> <%= messages.error[i] %></li>
+            <% } %>
+          <% } %>
+
+                <div>
+                    <%- include('option.ejs',{row : data[i].id, index:i}) %>
+                    
+                </div>
+
+
+          </div>
+          <form action="/elections1/<%=id%>/options/<%=data[i].id%>" method="post" onsubmit="validate()">
+            <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
+
+              <div class="flex gap-2 p-4">
+                  <div class="flex-auto">
+                      <input type="text" title="Enter atleast 2 characters.Remove space in the beginning"  name="title" placeholder="add option" class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required/>
+                  </div>
+              
+              <div class="flex-none">
+                  <button type="submit"   class="bg-green-600 text-white px-5 py-2 rounded font-medium py-1.5">Add Option</button>
+              </div>
+              
+          </div>
+      </form>
+      <div>
+          
+    </div>
+  </div>
+</div>
+
+                                        </div>
                                     </li>
                                     <% } %>
                             </ul>

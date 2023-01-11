@@ -275,6 +275,7 @@ app.get("/elections1/:id/launch",connectEnsureLogin.ensureLoggedIn(), async (req
          voters1,
         questionscount,
         voterscount, 
+        csrfToken: request.csrfToken(),
   })
 }
    catch (error) {
@@ -339,7 +340,7 @@ app.get('/result/:id', connectEnsureLogin.ensureLoggedIn(),async function(reques
   console.log(request.params.id)
   const Election1 = await election.findByPk(request.params.id);
   const questions = await question.getall(request.params.id);
-  const options = await option.findAll({ where: { questionid: questions } });
+  const options = await option.findAll({ where: { questionid: request.params.id } });
   const voters1 = await voters.findAll({ where: { electionid: request.params.id } });
   const questionscount = await question.countquestions(
     request.params.id
@@ -408,7 +409,7 @@ app.get('/elections1/:id/voters',connectEnsureLogin.ensureLoggedIn(), async func
     id:request.params.id,
     election1,
     data:voters1, 
-    
+    csrfToken: request.csrfToken(),
   
 });
 });
@@ -479,14 +480,15 @@ app.get('/elections1/:id/question',connectEnsureLogin.ensureLoggedIn(), async fu
   const questions1 = await question.findAll({ where: { electionid: request.params.id } });
   //const elections = await election.findByPk(request.params.id);
   //const questions = await question.getall(elections);
-  //const options = await option.findAll({ where: { questionid: questions } });
+  //const options = await option.findAll({ where: { questionid: questions1 } });
   //const voters1 = await voters.findAll({ where: { electionid: elections } });
   
   response.render("question", {
     id:request.params.id,
     election1,
     data:questions1, 
-    
+    //options,
+    csrfToken: request.csrfToken(),
   
 });
 });
@@ -512,6 +514,9 @@ app.post("/addquestion/:id",connectEnsureLogin.ensureLoggedIn(),async (request, 
 });
 
 
+
+
+
 app.delete("/elections1/:id/:questionid", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
   console.log("We have to delete a question  with ID: ", request.params.questionid);
   // First, we have to query our database to delete a Todo by ID.
@@ -520,7 +525,7 @@ app.delete("/elections1/:id/:questionid", connectEnsureLogin.ensureLoggedIn(), a
       if (question1 == null)
           return response.send(false);
       else {
-        question.deletequestion(request.params.questionid);
+        question.deletequestion1(request.params.questionid,request.params.id);
           return response.send(true);
       }
   } catch (error) {
@@ -529,6 +534,27 @@ app.delete("/elections1/:id/:questionid", connectEnsureLogin.ensureLoggedIn(), a
   }
 
 });
+
+app.post("/elections1/:id/options/:questionid",connectEnsureLogin.ensureLoggedIn(),async (request, response)=> {
+  //const electionID = await election.findByPk(request.params.id);
+ // console.log("id ",electionID);
+  console.log("electionid", request.params.id);
+  console.log("questionid", request.params.questionid);
+  //const Questions = await question.findAll({ where: { electionId: electionID } });
+  try {
+    await option.addoption(
+      request.body.title,
+      request.params.questionid);
+    return response.redirect(`/elections1/${request.params.id}/question`);
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
+
+
+
+
  
 app.get('/signup',function(req,res){
     res.render('signup',{csrfToken: req.csrfToken()});

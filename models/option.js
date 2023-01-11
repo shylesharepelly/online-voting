@@ -13,13 +13,13 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       option.belongsTo(models.question, {
         foreignKey: "questionid",
-        onDelete: "CASCADE",
+        
       });
 
     }
 
-  static async addoption(text,questionid){
-    this.create({questionid:questionid,option:text});
+  static async addoption(title,id){
+    this.create({questionid:id,option:title});
   } 
 
   static async removeoption(text,questionid) {

@@ -1,71 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="<%= csrfToken %>" />
-    <link href="./css/styles.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title><%= title %></title>
-    <script>
-      
-        var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        
-        function deleteoption(optionid) {
-          console.log(id);
-          fetch(`/elections1/:id/${optionid}`, {
-            method: 'delete',
-            headers: { 'Content-Type': 'application/json'},
-            //body: JSON.stringify({
-          
-       // })
-          }).then((res) => {
-            if(res.ok)
-            {
-              window.location.reload();
-            }
-          }).catch(err => console.error(err))
-        }
-      </script>
-    
-</head>
+
 <body>
     <div class="grid grid-cols-6">
-        <div class="col-start-3 col-span-2">
+      <div class="col-start-3 col-span-2">
+          
+          <div>
             
-            <div>
-              
-            <% if(messages && messages.error && messages.error.length > 0)  { %>
-              <% for(var i=0; i<messages.error.length; i++) { %>
-                      <li> <%= messages.error[i] %></li>
-              <% } %>
+          <% if(messages && messages.error && messages.error.length > 0)  { %>
+            <% for(var i=0; i<messages.error.length; i++) { %>
+                    <li> <%= messages.error[i] %></li>
             <% } %>
-            </div>
-            <form action="/elections1/:id/options/${optionid}" method="post" onsubmit="validate()">
-              <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
+          <% } %>
+          </div>
+          <form action="/elections1/<%=id%>/options" method="post" onsubmit="validate()">
+            <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
 
-                <div class="flex gap-2 p-4">
-                    <div class="flex-auto">
-                        <input type="text" title="Enter atleast 2 characters.Remove space in the beginning" pattern="([^\s][A-z0-9À-ž\s]+)" name="title" placeholder="whats next?" class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required/>
-                    </div>
-                
-                <div class="flex-none">
-                    <button type="submit"   class="bg-green-600 text-white px-5 py-2 rounded font-medium py-1.5">Add</button>
-                </div>
-            </div>
-        </form>
-        <div>
-            
-        </div>
-        <div>
-         
-        </div>
-        
-        
+              <div class="flex gap-2 p-4">
+                  <div class="flex-auto">
+                      <input type="text" title="Enter atleast 2 characters.Remove space in the beginning"  name="title" placeholder="add option" class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required/>
+                  </div>
+              
+              <div class="flex-none">
+                  <button type="submit"   class="bg-green-600 text-white px-5 py-2 rounded font-medium py-1.5">Add Option</button>
+              </div>
+              
+          </div>
+      </form>
+      <div>
+          
     </div>
-   
-
-    
+  </div>
+</div>
 </body>
-</html>
