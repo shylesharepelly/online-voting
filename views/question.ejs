@@ -35,7 +35,7 @@
 
     function deletequestion(id,questionid) {
           console.log("qui",questionid);
-          fetch(`/elections1/${id}/${questionid}`, {
+          fetch(`/elections1/${id}/question/${questionid}`, {
             method: 'delete',
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -51,7 +51,7 @@
             }
           }).catch(err => console.error(err))
         }
-
+ 
 
       </script>
     
@@ -87,7 +87,7 @@
 </div>
                                         </div>
                                         <div class="py-5 px-5">
-                                            <button  name="delete" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="" onclick=deletequestion(<%= id%>,<%= data[i].id %>)">Delete</a></button>
+                                            <button  name="delete" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="" onclick="deletequestion(<%= id%>,<%= data[i].id %>)">Delete</a></button>
                                         </div> 
                                         <div class="py-5 px-5">
                                             <button  name="manage" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2" onclick="window.location.href='/elections1/<%= id%>/question/<%= data[i].id %>'">Manage</button>

@@ -54,9 +54,20 @@ module.exports = (sequelize, DataTypes) => {
     },
     onDelete: "cascade",
   });
-}
 
 
+  }
+
+  static async deletealloptions(questionid) {
+    return this.destroy({
+      where: {
+        questionid:questionid,
+        
+      
+    },
+    onDelete: "cascade",
+  });
+ }
 
 }
 

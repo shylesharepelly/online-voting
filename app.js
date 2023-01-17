@@ -288,6 +288,35 @@ app.get("/elections1/:id/launch",connectEnsureLogin.ensureLoggedIn(), async (req
 
 
 
+app.get("/elections1/:id/preview",connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+  const Election1 = await election.findByPk(request.params.id);
+  const questions = await question.getall(request.params.id);
+  //const options = await option.findAll({ where: { questionid: questions } });
+  const questionoptions = [];
+  for (let i = 0; i < questions.length; i++) {
+      const alloptions = await option.getall(questions[i].id);
+      questionoptions.push(alloptions);
+      }
+  
+  try {
+    response.render("preview", {
+      id: request.params.id,
+      title1:request.params.id.title,
+        Election1,
+        questions,
+        questionoptions,
+        csrfToken: request.csrfToken(),
+  })
+}
+   catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
+
+
+
+
 app.get('/elections1', connectEnsureLogin.ensureLoggedIn(),async function(request,response){
   console.log(request.params.id)
   const elections = await election.findByPk(request.params.id);
@@ -446,15 +475,14 @@ app.put('/elections1/:id/:vid',connectEnsureLogin.ensureLoggedIn(), async functi
 
 
 
-app.delete("/elections1/:id/:voters1", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
-  console.log("We have to delete a Voter with ID: ", request.params.voters1);
-  // First, we have to query our database to delete a Todo by ID.
-  const voter1 = await voters.findByPk(request.params.voters1);
+app.delete("/elections1/:id/:voterId", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
+  console.log("We have to delete a Voter with ID: ", request.params.voterId);
+  const voter1 = await voters.findByPk(request.params.voterId);
   try {
       if (voter1 == null)
           return response.send(false);
       else {
-          voter1.deleteVoter(request.params.voters1);
+          voters.deletevoter(request.params.voterId);
           return response.send(true);
       }
   } catch (error) {
@@ -570,7 +598,6 @@ app.post("/elections1/:id/options/:quesid",connectEnsureLogin.ensureLoggedIn(),a
 
 app.delete("/elections1/:id/options/:quesid", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
   console.log("We have to delete an option with ID: ", request.params.id);
-  // First, we have to query our database to delete a Todo by ID.
   const option1 = await option.findByPk(request.params.id);
   console.log("option",option1.option)
   console.log("option",request.params.quesid)
@@ -666,17 +693,16 @@ app.put('/elections1/:id/question/:quesid',connectEnsureLogin.ensureLoggedIn(), 
 
 
 });
-
-app.delete("/elections1/:id/:questionid", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
+ 
+app.delete("/elections1/:id/question/:questionid", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
   console.log("We have to delete a question  with ID: ", request.params.questionid);
-  // First, we have to query our database to delete a Todo by ID.
   const question1 = await question.findByPk(request.params.questionid);
   try {
       if (question1 == null)
           return response.send(false);
       else {
-        option.removeoption(request.params.id,request.params.questionid);
-        question.deletequestion1(request.params.questionid,request.params.id);
+        option.deletealloptions(request.params.questionid);
+        await question.deletequestion1(request.params.questionid,request.params.id);
           return response.send(true);
       }
   } catch (error) {

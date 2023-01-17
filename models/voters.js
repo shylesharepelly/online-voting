@@ -33,10 +33,10 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async deleteVoter(id) {
-      return voters.destroy({
+    static async deletevoter(voterId) {
+      return this.destroy({
         where: {
-          id: id,
+          id: voterId,
         }
       });
     }

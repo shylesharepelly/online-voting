@@ -12,7 +12,7 @@
     <script>
  var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         
-
+ 
 function updatevoters(id,vid) {
           const title1 = document.getElementById(`${vid}`).value;
           fetch(`/elections1/${id}/${vid}`, {
@@ -24,18 +24,37 @@ function updatevoters(id,vid) {
                       email:title1,
                       "_csrf": token,
                  
-                  
-                })
-                  }).then((res) => {
-                    if(res.ok)
-                    {
-                      window.location.reload();
-                    }
-                  
-                  }).catch(err => console.error(err))
+                }),
+                  }).then(async res => {
+                if (res.status !== 200) {
+                    const json = await res.json();
+                    showMessage(json.errors, 'error');
+                } else {
+                    location.reload();
+                }
+            });
           }
 
-
+          const deletevoter = (id,voterId) => {
+            fetch(`/elections1/${id}/${voterId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id:id,
+                      voterId:voterId,
+                    "_csrf": token,
+                }),
+            }).then(async res => {
+                if (res.status !== 200) {
+                    const json = await res.json();
+                    showMessage(json.errors, 'error');
+                } else {
+                    location.reload();
+                }
+            });
+        }
 
     </script>
     <div>
@@ -47,7 +66,7 @@ function updatevoters(id,vid) {
         
             <div>
                 <% if (data.length==0){ %>
-                    <h5>You haven't registered any voters yet!</h5>
+                    <h5 class="font-bold text-2xl">You haven't registered any voters yet!</h5>
                     <% } else{ %>
                         <h4 class="mt-8 font-bold    text-2xl">List of Voters
                             
@@ -66,7 +85,7 @@ function updatevoters(id,vid) {
                                         
                                         
                                         <div class="py-2 px-5">
-                                            <button  name="delete" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="" onclick="deletevoter(<%= data[i].id %>)">Delete</a></button>
+                                            <button  name="delete" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="" onclick="deletevoter(<%=id%>,<%= data[i].id %>)">Delete</a></button>
                                         </div> 
                                         <div class="py-2 px-5">
                                             <button  name="update" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="" onclick="updatevoters(<%=id%>,<%= data[i].id %>)">Update</a></button>
