@@ -4,9 +4,11 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('questions', {
       id: {
-        allowNull: false,
+        
         autoIncrement: true,
         primaryKey: true,
+        allowNull: true,
+      onDelete: 'CASCADE',
         type: Sequelize.INTEGER
       },
       question: {

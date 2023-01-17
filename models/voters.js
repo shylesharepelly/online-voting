@@ -13,6 +13,8 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       voters.belongsTo(models.election, {
         foreignKey: "electionid",
+        onDelete: "cascade",
+        
       });
     }
 
@@ -31,13 +33,28 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async deletevoter(email) {
+    static async deleteVoter(id) {
       return voters.destroy({
         where: {
-          id: this.id,
+          id: id,
         }
       });
     }
+
+
+
+    
+  static async modifyvoters(email,vid,id){
+    console.log("email", email);
+    console.log("voterid", vid);
+    console.log("electionid", id);
+    return this.update({email:email},
+      {
+        where:
+        {id:vid,electionid:id}
+      });
+  }
+
 
 
 

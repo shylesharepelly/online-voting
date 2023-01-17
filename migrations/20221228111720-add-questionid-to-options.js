@@ -14,7 +14,11 @@ module.exports = {
       references:{
         table: 'questions',
         field: 'id',
-      }
+        
+      },
+      onDelete: 'CASCADE',
+      allowNull: true,
+      
     })
     /**
      * Add altering commands here.

@@ -4,9 +4,11 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('options', {
       id: {
-        allowNull: false,
+        allowNull: true,
         autoIncrement: true,
         primaryKey: true,
+        
+      onDelete: 'CASCADE',
         type: Sequelize.INTEGER
       },
       option: {

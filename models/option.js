@@ -11,10 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      option.belongsTo(models.question, {
+      option.belongsTo(models.question, 
+        {
         foreignKey: "questionid",
-        
-      });
+        onDelete: "set null",
+       
+        });
 
     }
 
@@ -22,13 +24,35 @@ module.exports = (sequelize, DataTypes) => {
     this.create({questionid:id,option:title});
   } 
 
-  static async removeoption(text,questionid) {
+
+
+  static async modifyoption(title,rid,questionid,){
+    console.log("title", title);
+    console.log("ques", questionid);
+    return this.update({option:title},
+      {
+        where:
+        {id:rid,questionid:questionid}
+      });
+  }
+  static async getall(Id)
+  {
+    return this.findAll({
+      where:{
+        questionid:Id,
+      },
+    });
+  }
+
+
+  static async removeoption(id,questionid) {
     return this.destroy({
       where: {
         questionid:questionid,
-        option:text,
+        id:id,
       
     },
+    onDelete: "cascade",
   });
 }
 

@@ -14,9 +14,13 @@ module.exports = (sequelize, DataTypes) => {
       
       question.belongsTo(models.election, {
         foreignKey: "electionid",
+        onDelete: "cascade",
+       
       });
       question.hasMany(models.option, {
         foreignKey: "questionid",
+        onDelete: "cascade",
+        
       });
 
     }
@@ -26,6 +30,17 @@ static async addquestion(question,description,electionid){
   console.log("add,", question);
   console.log("add,", description);
   return this.create({question:question,description:description,electionid:electionid});
+}
+
+
+static async modifyquestion(question,description,questionid,electionid){
+  console.log("ques", question);
+  console.log("desc", description);
+  return this.update({question:question,description:description},
+    {
+      where:
+      {id:questionid,electionid:electionid}
+    });
 }
 
 static async getall(Id)
@@ -49,7 +64,8 @@ static async getall(Id)
         where: {
           id: id,
           electionid:eid
-        }
+        },
+        onDelete:"cascade",
       });
     }
 

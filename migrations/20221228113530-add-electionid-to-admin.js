@@ -14,7 +14,8 @@ module.exports = {
       references:{
         table: 'admins',
         field: 'id',
-      }
+      },
+      onDelete:'cascade'
     })
 
     /**

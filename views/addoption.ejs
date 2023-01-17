@@ -1,27 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <link href="./css/styles.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+</head>
+<body style="background-image: linear-gradient(43deg,rgba(157, 255, 242, 0.566),rgba(168, 255, 168, 0.566))">
+  <script>
+var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        
+    
+                function removeoption(id,rid) {
+                  console.log(id);
+                  fetch(`/elections1/${rid}/options/${id}`, {
+                    method: 'delete',
+                    headers: { 'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        id:rid,
+                      questionid:id,
+                  "_csrf": token
+                })
+                  }).then((res) => {
+                    if(res.ok)
+                    {
+                      window.location.reload();
+                    }
+                  }).catch(err => console.error(err))
+                }
 
-<body>
-    <div class="grid grid-cols-6">
-      <div class="col-start-3 col-span-2">
-          
-          <div>
-            
+
+      function updatequestion(id,questionid) {
+          const question = document.getElementById(`1${questionid}`).value;
+        const description = document.getElementById(`2${questionid}`).value;
+
+          console.log("qui",questionid);
+          console.log("question",question);
+          console.log("qui desc",description);
+          fetch(`/elections1/${id}/question/${questionid}`, {
+            method: 'put',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                id:id,
+                questionid:questionid,
+                question:question,
+                description:description,
+
+          "_csrf": token
+        })
+          }).then((res) => {
+            if(res.ok)
+            {
+              window.location.reload();
+            }
+          }).catch(err => console.error(err))
+        }
+
+
+
+        
+  </script>
+    <div>
+      <%- include('head.ejs') %>
+   
+            <div>
+              <div class="grid grid-cols-6">
+                <div class="col-start-1 col-span-5">
+                    <button class="bg-green-600 text-white px-5 ml-5 py-2 rounded font-medium py-1.5"><a href="/elections1/<%= id%>" class="text-xl justify-center">Go back</a></button>
+                        <div>
+                            
+                                    <ul class="list-none">
+                                       
+                                            <li class="Election-Item">
+                                                <div class="flex gap-2 p-4">
+                                                    <div class="flex-auto">question:
+                                                        <input type="text" name="question" placeholder="New Question" class="w-full rounded p-2 border border-blue-900" id="1<%= data.id %>" value="<%= data.question %>">
+                                                        
+                                                    </div>
+                                                     
+                                                
+                                                <div class="flex-auto " >description:
+                                                    <input type="text" name="description" placeholder="New description" class="w-full p-2 rounded border border-blue-900" id="2<%= data.id %>" value="<%= data.description %>">
+         
+                                                </div> 
+                                                
+                                                <div class="py-5 px-5">
+                                                    <button  name="update" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="" onclick="updatequestion(<%= id%>,<%= data.id %>)">Update</a></button>
+                                                </div> 
+                                            </div>  
+                                 
+            </div> 
+
+</div>
+</div>
+</div>
+</div>
+<div>
+  <%- include('option.ejs',{row:options , data}) %>
+</div> 
+
           <% if(messages && messages.error && messages.error.length > 0)  { %>
             <% for(var i=0; i<messages.error.length; i++) { %>
                     <li> <%= messages.error[i] %></li>
             <% } %>
           <% } %>
-          </div>
-          <form action="/elections1/<%=id%>/options" method="post" onsubmit="validate()">
+          </div> 
+          <form action="/elections1/<%=id%>/options/<%=quesid%>" method="post" onsubmit="validate()">
             <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
 
               <div class="flex gap-2 p-4">
                   <div class="flex-auto">
-                      <input type="text" title="Enter atleast 2 characters.Remove space in the beginning"  name="title" placeholder="add option" class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required/>
-                  </div>
+                      <input type="text" title="Enter atleast 2 characters.Remove space in the beginning"  name="title" placeholder="add option" class=" ml-6 border border-gray-300 rounded text-gray-900  p-2 text-sm" required/>
+                      <button type="submit"   class="bg-green-600 text-white px-5 py-2 rounded font-medium py-1.5">Add Option</button>
               
-              <div class="flex-none">
-                  <button type="submit"   class="bg-green-600 text-white px-5 py-2 rounded font-medium py-1.5">Add Option</button>
-              </div>
+                    </div>
               
           </div>
       </form>

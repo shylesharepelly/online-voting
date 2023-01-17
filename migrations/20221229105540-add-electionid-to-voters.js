@@ -13,8 +13,10 @@ module.exports = {
       type:'foreign key',
       references:{
         table:'elections',
-        field: 'id'
-      }
+        field: 'id',
+        
+      },
+      onDelete:'cascade'
     });
 
     /**
