@@ -284,6 +284,10 @@ app.get("/elections1/:id/launch",connectEnsureLogin.ensureLoggedIn(), async (req
   }
 });
 
+
+
+
+
 app.get('/elections1', connectEnsureLogin.ensureLoggedIn(),async function(request,response){
   console.log(request.params.id)
   const elections = await election.findByPk(request.params.id);
@@ -415,15 +419,42 @@ app.get('/elections1/:id/voters',connectEnsureLogin.ensureLoggedIn(), async func
 });
 
 
-app.delete("/elections1/:id/voters", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
-  console.log("We have to delete a Voter with ID: ", request.params.id);
+
+app.put('/elections1/:id/:vid',connectEnsureLogin.ensureLoggedIn(), async function(request,response){
+  
+  const elections1 = await election.findByPk(request.params.id);
+  const voters1 = await voters.findAll({ where: { id: request.params.vid } });
+  
+  console.log("votersid", request.params.vid)
+  console.log("email",request.body.email)
+  try {
+    await voters.modifyvoters(
+      request.body.email,
+      request.params.vid,
+      request.params.id,
+      
+      );
+      
+    return response.redirect(`/elections1/${request.params.id}/question/${request.params.quesid}`);
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+
+
+});
+
+
+
+app.delete("/elections1/:id/:voters1", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
+  console.log("We have to delete a Voter with ID: ", request.params.voters1);
   // First, we have to query our database to delete a Todo by ID.
-  const voter1 = await voters.findByPk(request.params.id);
+  const voter1 = await voters.findByPk(request.params.voters1);
   try {
       if (voter1 == null)
           return response.send(false);
       else {
-          voter1.deleteVoter();
+          voter1.deleteVoter(request.params.voters1);
           return response.send(true);
       }
   } catch (error) {
@@ -480,7 +511,8 @@ app.get('/elections1/:id/question',connectEnsureLogin.ensureLoggedIn(), async fu
   const questions1 = await question.findAll({ where: { electionid: request.params.id } });
   //const elections = await election.findByPk(request.params.id);
   //const questions = await question.getall(elections);
-  //const options = await option.findAll({ where: { questionid: questions1 } });
+  
+  //const options = await option.findAll({ where: { questionid: questions1[i] } });
   //const voters1 = await voters.findAll({ where: { electionid: elections } });
   
   response.render("question", {
@@ -500,13 +532,15 @@ app.post("/addquestion/:id",connectEnsureLogin.ensureLoggedIn(),async (request, 
   //const electionID = await election.findByPk(request.params.id);
  // console.log("id ",electionID);
   console.log("id2", request.params.id);
+  
   //const Questions = await question.findAll({ where: { electionId: electionID } });
   try {
-    await question.addquestion(
+    const ques=await question.addquestion(
       request.body.questiontext,
       request.body.description,
       request.params.id);
-    return response.redirect(`/elections1/${request.params.id}/question`);
+      console.log("questionid", ques.id);
+    return response.redirect(`/elections1/${request.params.id}/question/${ques.id}`);
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
@@ -516,6 +550,122 @@ app.post("/addquestion/:id",connectEnsureLogin.ensureLoggedIn(),async (request, 
 
 
 
+app.post("/elections1/:id/options/:quesid",connectEnsureLogin.ensureLoggedIn(),async (request, response)=> {
+  //const electionID = await election.findByPk(request.params.id);
+ // console.log("id ",electionID);
+  console.log("electionid", request.params.id);
+  console.log("questionid", request.params.quesid);
+  console.log("title", request.body.title);
+  //const Questions = await question.findAll({ where: { electionId: electionID } });
+  try {
+    await option.addoption(
+      request.body.title,
+      request.params.quesid);
+    return response.redirect(`/elections1/${request.params.id}/question/${request.params.quesid}`);
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
+
+app.delete("/elections1/:id/options/:quesid", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
+  console.log("We have to delete an option with ID: ", request.params.id);
+  // First, we have to query our database to delete a Todo by ID.
+  const option1 = await option.findByPk(request.params.id);
+  console.log("option",option1.option)
+  console.log("option",request.params.quesid)
+  try {
+      if (option1 == null)
+          return response.send(false);
+      else {  
+        option.removeoption(request.params.id,request.params.quesid);
+          return response.send(true);
+      }
+  } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
+  }
+
+});
+
+
+
+app.put('/elections1/:id/options/:rid',connectEnsureLogin.ensureLoggedIn(), async function(request,response){
+  
+  const questions1 = await question.findByPk(request.params.id);
+  const options = await option.findAll({ where: { questionid: request.params.rid } });
+  
+  console.log("questions",questions1)
+  console.log("option",options)
+  console.log("title",request.body.title)
+  try {
+    await option.modifyoption(
+      request.body.title,
+      request.params.rid,
+     
+      request.params.id,
+      
+      );
+      
+    return response.redirect(`/elections1/${request.params.id}/question/${request.params.quesid}`);
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+
+
+});
+
+
+
+app.get('/elections1/:id/question/:quesid',connectEnsureLogin.ensureLoggedIn(), async function(request,response){
+  const election1 = await election.findByPk(request.params.id);
+  const questions1 = await question.findByPk(request.params.quesid);
+  const options = await option.findAll({ where: { questionid: request.params.quesid } });
+  
+  console.log("questions",questions1)
+  console.log("questionstext",questions1.question)
+  console.log("questions description",questions1.description)
+  
+
+  response.render("addoption", {
+    id:request.params.id,
+    election1,
+    data:questions1, 
+    options,
+    quesid:request.params.quesid,
+    csrfToken: request.csrfToken(),
+  
+});
+});
+
+
+
+app.put('/elections1/:id/question/:quesid',connectEnsureLogin.ensureLoggedIn(), async function(request,response){
+  const election1 = await election.findByPk(request.params.id);
+  const questions1 = await question.findByPk(request.params.quesid);
+  const options = await option.findAll({ where: { questionid: request.params.quesid } });
+  
+  console.log("questions",questions1)
+  console.log("questionstext",request.body.question)
+  console.log("questions description",request.body.description)
+  try {
+    await question.modifyquestion(
+      request.body.question,
+      request.body.description,
+      request.params.quesid,
+      request.params.id,
+      
+      );
+      
+    return response.redirect(`/elections1/${request.params.id}/question/${request.params.quesid}`);
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+
+
+});
 
 app.delete("/elections1/:id/:questionid", connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
   console.log("We have to delete a question  with ID: ", request.params.questionid);
@@ -525,6 +675,7 @@ app.delete("/elections1/:id/:questionid", connectEnsureLogin.ensureLoggedIn(), a
       if (question1 == null)
           return response.send(false);
       else {
+        option.removeoption(request.params.id,request.params.questionid);
         question.deletequestion1(request.params.questionid,request.params.id);
           return response.send(true);
       }
@@ -535,22 +686,6 @@ app.delete("/elections1/:id/:questionid", connectEnsureLogin.ensureLoggedIn(), a
 
 });
 
-app.post("/elections1/:id/options/:questionid",connectEnsureLogin.ensureLoggedIn(),async (request, response)=> {
-  //const electionID = await election.findByPk(request.params.id);
- // console.log("id ",electionID);
-  console.log("electionid", request.params.id);
-  console.log("questionid", request.params.questionid);
-  //const Questions = await question.findAll({ where: { electionId: electionID } });
-  try {
-    await option.addoption(
-      request.body.title,
-      request.params.questionid);
-    return response.redirect(`/elections1/${request.params.id}/question`);
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
-  }
-});
 
 
 

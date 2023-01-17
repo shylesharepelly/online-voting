@@ -73,28 +73,31 @@
                                 <% for(var i=0; i<data.length; i++) {%>
                                     <li class="Election-Item">
                                         <div class="flex gap-2 p-4">
-                                            <div class="flex-auto">question:
-                                                <input type="text" name="question" placeholder="New Question" class="w-full" id="<%= data[i].id %>" value="<%= data[i].question %>">
-                                                
-                                            </div>
+                                            <div class="flex-auto font-bold w-full">question: &nbsp;&nbsp;&nbsp;
+                                                 <label class=" text-2xl   border border-gray-600 w-full  bg-green-600 hover:bg-green-800">
+                                                  <%= data[i].question %>
+                                                </label>
+                                            
                                              
                                         
-                                        <div class="flex-auto " >description:
-                                            <input type="text" name="description" placeholder="New description" class="w-full" id="<%= data[i].id %>" value="<%= data[i].description %>">
-
+                                        <div class="flex-auto font-bold " >description:
+                                             <label class="font-bold text-2xl border border-gray-600 bg-green-600 hover:bg-green-800">
+                                              <%= data[i].description %>
+                                            </label>
+</div>
                                         </div>
                                         <div class="py-5 px-5">
-                                            <button  name="delete" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="" onclick="deletequestion(<%= id%>,<%= data[i].id %>)">Delete</a></button>
+                                            <button  name="delete" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="" onclick=deletequestion(<%= id%>,<%= data[i].id %>)">Delete</a></button>
                                         </div> 
                                         <div class="py-5 px-5">
-                                            <button  name="update" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="" onclick="updatequestion(<%= data[i].id %>)">Update</a></button>
+                                            <button  name="manage" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2" onclick="window.location.href='/elections1/<%= id%>/question/<%= data[i].id %>'">Manage</button>
                                         </div> 
                                     </div>  
                                         
                                         <div class="col-start-2">
 
                                 <div class="grid grid-cols-6">
-                                <div class="col-start-3 col-span-2">
+                                <div class="col-start-1 col-span-2">
           
           <div>
             
@@ -111,20 +114,6 @@
 
 
           </div>
-          <form action="/elections1/<%=id%>/options/<%=data[i].id%>" method="post" onsubmit="validate()">
-            <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
-
-              <div class="flex gap-2 p-4">
-                  <div class="flex-auto">
-                      <input type="text" title="Enter atleast 2 characters.Remove space in the beginning"  name="title" placeholder="add option" class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required/>
-                  </div>
-              
-              <div class="flex-none">
-                  <button type="submit"   class="bg-green-600 text-white px-5 py-2 rounded font-medium py-1.5">Add Option</button>
-              </div>
-              
-          </div>
-      </form>
       <div>
           
     </div>
