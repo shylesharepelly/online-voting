@@ -13,51 +13,64 @@
     <div>
         <%- include('head.ejs') %>
     </div>
+    <div>
+
+        <button class="bg-green-600 hover:bg-green-800 text-xl text-white px-5 ml-5 py-2 rounded font-medium "  onclick="window.location.href='/elections1/<%= id%>';" >Go back</button>
+             
+    </div>
     <div class="grid grid-cols-6">
         <div class="col-start-2 col-span-3">
-            <h6 class="py-4 text-4xl font-bold"><%=title1 %></h6>
-            
-            <div>
-                <button class="bg-green-600 hover:bg-green-800 text-xl rounded px-5 py-2 text-white" onclick="window.location.href='/elections1/<%=Election1.id %>/launch';">Launch election
-                </button>
-            </div>
-        </div>
-        <div>
-                    <h4 class=" font-bold col-start-3 text-2xl">List of questions</h4>
-                    <label class="pl-6 pr-2 text-xl text-black-600  rounded border-gray-600">
-                            There are <%- data.length %> questions
-                    </label>
-                    <ul class="list-none">
-                        <% for(var i=0; i<data.length; i++) {%>
-                            <li class="Election-Item">
-                                <div class="flex gap-2 p-4">
-                                    <div class="flex-auto">
-                                                question:
-                                            <div class="border border-gray-600 rounded text-gray-900 p-2 ">
-                                                <%= data[i].question %>
-                                            </div>
-                                        
+           
+
+            <ul class="list-none">
+                <% for(var i=0; i<data.length; i++) {%>
+                    <li class="Election-Item">
+                        <div class="flex p-4">
+                            <div class="flex-auto">
+                                       
+                                    <div class="text-gray-900 uppercase p-2 font-bold text-xl">
+                                        <%=i+1%> .
+                                        <%= data[i].question %>
                                     </div>
                                 
-                                <div class="flex-auto " >
-                                    
-                                           description:
-                                        <div class="border border-gray-600 rounded text-gray-900 p-2 ">
+                                    <div class=" text-black-600 px-9  ">
                                         <%= data[i].description %>
                                     </div>
-                                </div>
-                                   
-                                
-                            </li>
-                            <% } %>
-                    </ul>
-                    
+                            </div>
+                        
+                            <% for(var j=0; j<questionoptions[i].length; j++) {%>
+                                <li class="Election-Item">
+                                    <div class="flex px-4">
+                                        <div class="flex-auto">
+                                                  
+                                                <div class="uppercase text-black-600 px-9 font-bold ">
+                                                    <input type="radio"  name="<%= questionoptions[i][j].option %>"  value="<%= questionoptions[i][j].id %>"   >
+                                                    <label for="<%= questionoptions[i][j].option %>">
+                                                        <%= questionoptions[i][j].option %>
+                                                    </label>
+                                                    
+                                                    
+                                                </div>
+                                        </div>
+                                    
+                                </li>
+                                <% } %>
+
+
+
+
+                    </li>
+                    <% } %>
+
+
+
+            </ul>
+            
         </div>
-        <div>
-            </div>
-            <div>
+    </div>
+       
                 
-            </div>
+</div>
 </div>
 
 

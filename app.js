@@ -303,7 +303,7 @@ app.get("/elections1/:id/preview",connectEnsureLogin.ensureLoggedIn(), async (re
       id: request.params.id,
       title1:request.params.id.title,
         Election1,
-        questions,
+        data:questions,
         questionoptions,
         csrfToken: request.csrfToken(),
   })
