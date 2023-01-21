@@ -11,24 +11,108 @@
 </head>
 
 <body style="background-image: linear-gradient(43deg,rgba(157, 255, 242, 0.566),rgba(168, 255, 168, 0.566))">
+
+    <script>
+        var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                
+            
+        function updateelection(id) {
+                  
+          fetch(`/election/${id}`, {
+                    method: 'put',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      electionid:id,
+                      status: true,
+                      
+                      "_csrf": token,
+                 
+                  
+                })
+                  }).then((res) => {
+                    if(res.ok)
+                    {
+                      window.location.reload();
+                    }
+                  
+                  }).catch(err => console.error(err))
+          }
+</script>        
+
     <div>
         <%- include('head.ejs') %>
     </div>
     <div class="grid grid-cols-6">
         <div class="col-start-2 col-span-3">
-            <h6 class="py-4 text-4xl font-bold"><%=title1 %></h6>
+            <h6 class="py-4 text-4xl font-bold text-rose-600"><%=title1 %></h6>
             <h6>
-                public url:
+                <h4 class="text-2xl font-bold">public url:
+                <%= url %>
+
+                <button class="bg-green-600 hover:bg-green-800 text-xl rounded  ml-5 px-5 py-2 text-white" onclick="window.open('/elections1/<%= id %>/voting')">Live Preview
+                </button>
+
+                <button  name="end" class="text-white bg-green-600 hover:bg-green-800 ml-5 rounded text-xl rounded px-5 py-2"><a  onclick="updateelection(<%= id %>)">End</a></button>
+              
+                </h4>
+               
+
             </h6>
             
             <h6>
                 Number of votes casted:
             </h6>
-            <div class="py-2 px-5">
-                <button  name="end" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="" onclick="endelection(<%= data[i].id %>)">End</a></button>
-              </div>
+            
         </div>
         
+</div>
+        <div class="grid grid-cols-6">
+            <div class="col-start-2 col-span-3">
+               
+    
+                <ul class="list-none">
+                    <% for(var i=0; i<data.length; i++) {%>
+                        <li class="Election-Item">
+                            <div class="flex p-4">
+                                <div class="flex-auto">
+                                           
+                                        <div class="text-gray-900 uppercase p-2 font-bold text-xl">
+                                            <%=i+1%> .
+                                            <%= data[i].question %>
+                                        </div>
+                                    
+                                </div>
+                            
+                                <% for(var j=0; j<questionoptions[i].length; j++) {%>
+                                    <li class="Election-Item">
+                                        <div class="flex px-4">
+                                            <div class="flex-auto">
+                                                      
+                                                    <div class="uppercase text-black-600 px-9 font-bold ">
+                                                        
+                                                        <label for="<%= questionoptions[i][j].option %>">
+                                                            <%= questionoptions[i][j].option %>
+                                                        </label>
+                                                        
+                                                        
+                                                    </div>
+                                            </div>
+                                        
+                                    </li>
+                                    <% } %>
+    
+    
+    
+    
+                        </li>
+                        <% } %>
+    
+    
+    
+                </ul>
+                
+            </div>
+        </div>
 
            
     </div>

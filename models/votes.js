@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       });
 
     }
-
+ 
 
 
 
@@ -30,6 +30,23 @@ module.exports = (sequelize, DataTypes) => {
       return this.create({ voterid:voterid, questionid:questionid, optionid: optionid });
     }
     
+    static async getall(Id)
+    {
+      return this.findAll({
+        where:{
+          voterid:Id,
+        },
+      });
+    }
+
+    static async getall1(Id)
+    {
+      return this.findAll({
+        where:{
+          questionid:Id,
+        },
+      });
+    }
 
   }
   votes.init({
