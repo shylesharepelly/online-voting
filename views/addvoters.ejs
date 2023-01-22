@@ -16,13 +16,16 @@
                         <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
 
                         <div class="flex gap-2 py-4">
-                            <div>
+                             
+                            <div class="py-2">
+                                <label for="voterid" >VoterId</label>
                                 <input type="text" name="voterid" required placeholder="Voter ID" class="border border-gray-600 rounded text-gray-900 wp-content p-2 text-sm" />
                             </div>
-                            <div>
+                            <div class="py-2">
+                                <label for="password">Password</label>
                                 <input type="password" name="password" required placeholder="Password" class="border border-gray-600 rounded text-gray-900 wp-content p-2 text-sm" />
                             </div>
-                            <div>
+                            <div class="py-2">
                                 <button type="submit" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2">Add Voter</button>
                             </div>
                         </div>

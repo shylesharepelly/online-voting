@@ -41,6 +41,14 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
+    static async getall(Id)
+    {
+      return this.findAll({
+        where:{
+          electionid:Id,
+        },
+      });
+    }
 
 
     

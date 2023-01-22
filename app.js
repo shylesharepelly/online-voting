@@ -418,13 +418,33 @@ app.get("/elections1/:id/launch",connectEnsureLogin.ensureLoggedIn(), async (req
     request.params.id
   );
   const questionoptions = [];
-  for (let i = 0; i < questions.length; i++) {
-      const alloptions = await option.getall(questions[i].id);
-      questionoptions.push(alloptions);
-      }
+  const voteslist =  [];
+      for (let i = 0; i < questions.length; i++) {
+          const alloptions = await option.getall(questions[i].id);
+          questionoptions.push(alloptions);
+          for (let j=0;j<alloptions.length;j++){
+            const voted = await votes.countvotes(alloptions[j].id);
+            voteslist.push(voted);
+          }
+          }
+      
   
   const electionurl = "elections1/" + Election1.id + "/voting";
   const voterscount = await voters.countvoters(request.params.id);
+
+
+  const allvoters = await voters.getall(request.params.id);
+  let count1=0
+for (let j=0;j<allvoters.length;j++){
+  const voted = await votes.countvoters(allvoters[j].id);
+  if(voted>0){
+    count1=count1+1
+  }
+  
+}
+
+
+
   try {
     const updatedelection = await Election1.setLaunchedStatus(true);
     response.render("result", {
@@ -432,9 +452,11 @@ app.get("/elections1/:id/launch",connectEnsureLogin.ensureLoggedIn(), async (req
       title1:request.params.id.title,
         Election1,
         data:questions,
+        count1,
         questionoptions,
          voters1,
         questionscount,
+        voteslist,
         url:electionurl,
         voterscount, 
         csrfToken: request.csrfToken(),
@@ -456,26 +478,63 @@ app.get('/elections1/:id/voting', async function(request,response){
   const questionscount = await question.countquestions(
     request.params.id
   );
-  const voterscount = await voters.countvoters(request.params.id);
-  const questionoptions = [];
-  for (let i = 0; i < questions.length; i++) {
-      const alloptions = await option.getall(questions[i].id);
-      questionoptions.push(alloptions);
+      const questionoptions = [];
+      const voteslist =  [];
+      for (let i = 0; i < questions.length; i++) {
+          const alloptions = await option.getall(questions[i].id);
+          questionoptions.push(alloptions);
+          for (let j=0;j<alloptions.length;j++){
+            const voted = await votes.countvotes(alloptions[j].id);
+            voteslist.push(voted);
+          }
+          }
+      const electionurl =  "elections1/" + Election1.id + "/voting";
+      const voterscount = await voters.countvoters(request.params.id);
+    
+      console.log("voters",voterscount)
+    
+      const allvoters = await voters.getall(request.params.id);
+        let count1=0
+      for (let j=0;j<allvoters.length;j++){
+        const voted = await votes.countvoters(allvoters[j].id);
+        if(voted>0){
+          count1=count1+1
+        }
+        
       }
-  
 
+
+
+  if(Election1.status)
+  {
+    
   response.render("user-login", {
     id: request.params.id,
     title1:Election1.title,
       Election1,
-      questions,
+      data:questions,
       questionoptions,
        voters1,
+       count1,
+       voteslist,
+       voterscount,
       questionscount,
       voterscount, 
       csrfToken: request.csrfToken(),
   
 });
+  }
+  else{
+
+  
+  response.render("user-login", {
+    id: request.params.id,
+    title1:Election1.title,
+      Election1,
+      csrfToken: request.csrfToken(),
+  
+});
+  }
 });
 
 
@@ -553,7 +612,6 @@ app.post('/elections1/:id/vote',
 
 app.get('/result/:id', connectEnsureLogin.ensureLoggedIn(),async function(request,response){
   console.log("id",request.params.id)
-  //console.log("url",request.params.url)
   const Election1 = await election.findByPk(request.params.id);
   const questions = await question.getall(request.params.id);
   const questionscount = await question.countquestions(
@@ -564,15 +622,26 @@ app.get('/result/:id', connectEnsureLogin.ensureLoggedIn(),async function(reques
   for (let i = 0; i < questions.length; i++) {
       const alloptions = await option.getall(questions[i].id);
       questionoptions.push(alloptions);
-      const voted = await votes.getall1(questions[i].id);
-      
-      voteslist.push(voted);
+      for (let j=0;j<alloptions.length;j++){
+        const voted = await votes.countvotes(alloptions[j].id);
+        voteslist.push(voted);
+      }
       }
   const electionurl =  "elections1/" + Election1.id + "/voting";
-  
   const voterscount = await voters.countvoters(request.params.id);
 
+  console.log("voters",voterscount)
 
+  const allvoters = await voters.getall(request.params.id);
+    let count1=0
+  for (let j=0;j<allvoters.length;j++){
+    const voted = await votes.countvoters(allvoters[j].id);
+    if(voted>0){
+      count1=count1+1
+    }
+    
+  }
+console.log("count",count1)
   response.render("result", {
     id: request.params.id,
     title1:Election1.title,
@@ -583,6 +652,7 @@ app.get('/result/:id', connectEnsureLogin.ensureLoggedIn(),async function(reques
       voteslist,
       questionscount,
       voterscount, 
+      count1,
       csrfToken: request.csrfToken(),
   
 });

@@ -21,10 +21,17 @@
         <div class="col-start-2 col-span-3">
             <h6 class="py-4 text-4xl font-bold"><%=title1 %></h6>
                 <div>
-                    <h4 class="text-2xl font-bold">There are  <%=questionscount%> questions</h4    >
+                    <h4 class="text-2xl font-bold">There are  <%=questionscount%> questions</h4>
                 </div>
+               <% if(questionscount==0){ %>
+                    <div class="text-xl font-mono font-bold text-red-600">
+                        <h3>Add atleast one question</h3>
+                    </div>
+                <% } %>
                 
-                <div>
+                
+
+                <div> 
                     <%- include('addquestion.ejs',{Election1,csrfToken}) %>
                 </div>
                 <div>
@@ -38,7 +45,12 @@
                     <h2 class="text-2xl font-bold">There are <%=voterscount%> voters</h2>
                 </div>
                 
-                
+                <% if(voterscount==0){ %>
+                    <div class="text-xl font-mono font-bold text-red-600 bg-red">
+                        <h3>Add atleast one voter</h3>
+                    </div>
+                <% } %>
+            
                 <div>
                     <%- include('addvoters.ejs',{csrfToken}) %>
                 </div>
@@ -50,12 +62,23 @@
                 
                 <br>
                 <div>
-                    
+                    <% if(voterscount==0 || questionscount==0){ %>
+                        
+                        <button disabled class="bg-green-600  text-xl rounded px-5 py-2 text-white" onclick="window.location.href='/elections1/<%=Election1.id %>/preview';">Preview election
+                        </button>
+                        &nbsp;
+                        <button disabled class="bg-green-600 text-xl rounded px-5 py-2 text-white" onclick="window.location.href='/elections1/<%=Election1.id %>/launch';">Launch election
+                        </button>
+
+                    <% } else { %>
+                
                     <button class="bg-green-600 hover:bg-green-800 text-xl rounded px-5 py-2 text-white" onclick="window.location.href='/elections1/<%=Election1.id %>/preview';">Preview election
                     </button>
                     &nbsp;
                     <button class="bg-green-600 hover:bg-green-800 text-xl rounded px-5 py-2 text-white" onclick="window.location.href='/elections1/<%=Election1.id %>/launch';">Launch election
                     </button>
+
+                    <% } %>
                 </div>
                 <br>
                 <div>

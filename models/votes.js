@@ -43,8 +43,24 @@ module.exports = (sequelize, DataTypes) => {
     {
       return this.findAll({
         where:{
-          questionid:Id,
+          optionid:Id,
         },
+      });
+    }
+    static countvotes(id) {
+      return this.count({
+        where: {
+          optionid:id,
+        },
+      });
+    }
+    static countvoters(id) {
+      return this.count({
+        where: {
+          voterid:id,
+         
+        },
+        
       });
     }
 
