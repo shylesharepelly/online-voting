@@ -101,16 +101,8 @@ passport.serializeUser((user,done)=>{
 });
 
 passport.deserializeUser((req,id,done)=>{
-  if (session.role == 'admin') {
-  admin.findByPk(id)
-  .then(user=>{
-    done(null,user)
-  })
-  .catch(error=>{
-    done(error,null)
-  })
-}
-else if (session.role == 'voter') {
+  
+if (session.role == 'voter') {
   voters.findByPk(id)
       .then(user => {
           done(null, user,req)
@@ -118,6 +110,15 @@ else if (session.role == 'voter') {
       .catch((error) => {
           done(error, null)
       })
+}
+else{
+  admin.findByPk(id)
+  .then(user=>{
+    done(null,user)
+  })
+  .catch(error=>{
+    done(error,null)
+  })
 }
 });
 
@@ -156,7 +157,7 @@ app.post("/users", async (request,response)=>{
     
     
     
-    console.log(hashedpwd)
+    console.log("hashed password",hashedpwd)
   try{
     const admin1= await admin.create({
       firstname:request.body.firstname,
@@ -190,7 +191,7 @@ app.post(
     failureFlash: true,
   }),
   function (request, response) {
-    console.log(request.user);
+    console.log("userid",request.user);
     response.redirect("/elections");
   }
 );
@@ -216,7 +217,7 @@ app.get('/elections',connectEnsureLogin.ensureLoggedIn(),async (request,response
   const newelections1 = await election.newelections(loggedInUser);
   const ongoing1 = await election.ongoing(loggedInUser);
   const completed1 = await election.completed1(loggedInUser);
-
+console.log("new user")
   if (request.accepts("html")) {
     response.render("elections", {
       newelections1,
