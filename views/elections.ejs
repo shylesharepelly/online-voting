@@ -28,7 +28,7 @@ function updateelection(id) {
           
         })
           }).then((res) => {
-            if(res.ok)
+            if(res)
             {
               window.location.reload();
             }
@@ -50,7 +50,7 @@ function launchedelection(id) {
           
         })
           }).then((res) => {
-            if(res.ok)
+            if(res)
             {
               window.location.reload();
             }
@@ -71,7 +71,7 @@ function launchedelection(id) {
           "_csrf": token
         })
           }).then((res) => {
-            if(res.ok)
+            if(res)
             {
               window.location.reload();
             }

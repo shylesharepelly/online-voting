@@ -11,7 +11,7 @@
 <body>
     <%- include('header.ejs') %>
     <div style="width:500px;height:400px;margin-top: 25px;margin-left: auto;margin-right: auto;background-image: linear-gradient(43deg,rgba(157, 255, 242, 0.566),rgba(168, 255, 168, 0.566));border-radius: 40px;padding-top: 50px;">
-        <div>
+        <div class="text-red-600 ml-5 font-bold text-2xl">
                 
             <% if(messages && messages.error && messages.error.length > 0)  { %>
                 <% for(var i=0; i<messages.error.length; i++) { %>

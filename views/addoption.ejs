@@ -25,7 +25,7 @@ var token = document.querySelector('meta[name="csrf-token"]').getAttribute('cont
                   "_csrf": token
                 })
                   }).then((res) => {
-                    if(res.ok)
+                    if(res)
                     {
                       window.location.reload();
                     }
@@ -52,7 +52,7 @@ var token = document.querySelector('meta[name="csrf-token"]').getAttribute('cont
           "_csrf": token
         })
           }).then((res) => {
-            if(res.ok)
+            if(res)
             {
               window.location.reload();
             }

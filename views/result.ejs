@@ -43,8 +43,11 @@
         <%- include('head.ejs') %>
     </div>
     <div>
-        <button  name="goback" class="text-white bg-green-600 ml-5 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="/elections" class=" px-4  p-2 font-bold text-xl">Go Back</a></button>
+        
+        <button name="goback" class="text-white bg-green-600 ml-5 hover:bg-green-800 font-medium rounded px-5 py-2" onclick="window.location.href='/elections';">Go Back
+        </button>
     </div>
+
 <div>
     
     <% if (Election1.status) { %>
@@ -68,7 +71,7 @@
                 </button>
                 <% if (!Election1.status) { %>
                     
-                <button  name="end" class="text-white bg-green-600 hover:bg-green-800 ml-5 rounded text-xl rounded px-5 py-2"><a  onclick="updateelection(<%= id %>)">End</a></button>
+                <a class="px-10 ml-5 cursor-pointer py-1 border border-red-300 bg-green-600 hover:bg-green-800 text-white rounded" onclick="updateelection(<%= id %>)">End</a>
               
                     
                       <% }  %>

@@ -62,7 +62,7 @@
                                             <div class="flex px-4">
                                                 <div class="flex-auto">
                                                           
-                                                        <div class="uppercase text-black-600 px-9 p-2 font-bold ">
+                                                        <div class="uppercase text-black-600 px-5 p-2 font-bold ">
                                                             
                                                             <label for="<%= questionoptions[i][j].option %>">
                                                                 <%= questionoptions[i][j].option %>
@@ -99,7 +99,7 @@
 
         <% } else { %>
     <div style="width:500px;height:400px;margin-top: 30px;margin-left: auto;margin-right: auto;background-image: linear-gradient(43deg,rgba(157, 255, 242, 0.566),rgba(168, 255, 168, 0.566));border-radius: 40px;padding-top: 50px;">
-        <div>
+        <div class="text-red-600">
                 
             <% if(messages && messages.error && messages.error.length > 0)  { %>
                 <% for(var i=0; i<messages.error.length; i++) { %>

@@ -60,15 +60,15 @@
     </div>
     <div class="grid grid-cols-6">
         <div class="col-start-1 col-span-5">
-            <button class="bg-green-600 text-white px-5 ml-5 py-2 rounded font-medium py-1.5"><a href="/elections1/<%= id%>" class="text-xl justify-center">Go back</a></button>
-                <div> 
+          <button  class="bg-green-600 hover:bg-green-800 text-xl ml-5 rounded px-5 py-2 text-white" onclick="window.location.href='/elections1/<%= id%>';">Go back
+          </button><div> 
                     <% if (data.length==0){ %>
                         <h5 class="px-6 col-start-3 ml-5 text-2xl text-grey-600 justify-center">You haven't added any questions yet!</h5>
                         <% } else{ %>
                             <h4 class=" font-bold px-5 py-3 col-start-3 text-2xl">List of questions:</h4>
                             <label class="pl-6 pr-2 text-xl text-black-600  rounded border-gray-600">
                                     There are <%- data.length %> questions
-                                </label>
+                                </label> 
                             <ul class="list-none">
                                 <% for(var i=0; i<data.length; i++) {%>
                                     <li class="Election-Item">
@@ -86,8 +86,8 @@
                                             </label>
 </div>
                                         </div>
-                                        <div class="py-5 px-5">
-                                            <button  name="delete" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="" onclick="deletequestion(<%= id%>,<%= data[i].id %>)">Delete</a></button>
+                                        <div class="py-7 px-5">
+                                            <a  class="px-5 py-2 border border-red-300 font-bold bg-green-600 hover:bg-green-800 text-white rounded"  href="" onclick="deletequestion(<%= id%>,<%= data[i].id %>)">Delete</a>
                                         </div> 
                                         <div class="py-5 px-5">
                                             <button  name="manage" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2" onclick="window.location.href='/elections1/<%= id%>/question/<%= data[i].id %>'">Manage</button>
@@ -99,24 +99,7 @@
                                 <div class="grid grid-cols-6">
                                 <div class="col-start-1 col-span-2">
           
-          <div>
-            
-          <% if(messages && messages.error && messages.error.length > 0)  { %>
-            <% for(var i=0; i<messages.error.length; i++) { %>
-                    <li> <%= messages.error[i] %></li>
-            <% } %>
-          <% } %>
-
-                <div>
-                    <%- include('option.ejs',{row : data[i].id, index:i}) %>
-                    
-                </div>
-
-
-          </div>
-      <div>
-          
-    </div>
+         
   </div>
 </div>
 
@@ -132,9 +115,6 @@
                         
                     </div>
         </div>
-    
-    
-    
     
 </body>
 </html>

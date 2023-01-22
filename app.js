@@ -282,7 +282,22 @@ app.put("/elections/:id",connectEnsureLogin.ensureLoggedIn(), async (request, re
 
 app.delete("/election/:id",connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
   const Election1 = await election.findByPk(request.params.id);
+  
+  const questions1 = await question.findAll({ where: { electionid: request.params.id } });
   try{
+
+    for (let i = 0; i < questions1.length; i++) {
+      await option.deletealloptions(questions1[i].id);
+    }
+    for (let i = 0; i < questions1.length; i++) {
+      await question.deletequestion1(questions1[i].id,request.params.id);
+    }
+    const voter1 = await voters.getall(request.params.id);
+    for (let i = 0; i < voter1.length; i++) {
+      await voters.deletevoter(voter1[i].id);
+    }
+    
+
     await election.deleteelection(request.params.id);
     return response.json(true);
   }
@@ -294,15 +309,15 @@ app.delete("/election/:id",connectEnsureLogin.ensureLoggedIn(), async (request, 
 
 
 
-app.get("/election/:id",connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
-  try {
-    const Election1 = await election.findByPk(request.params.id);
-    return response.json(Election1);
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
-  }
-});
+// app.get("/election/:id",connectEnsureLogin.ensureLoggedIn(), async function (request, response) {
+//   try {
+//     const Election1 = await election.findByPk(request.params.id);
+//     return response.json(Election1);
+//   } catch (error) {
+//     console.log(error);
+//     return response.status(422).json(error);
+//   }
+// });
 
 app.post("/elections/new", async (request, response)=> {
   const title1= request.body.title;
@@ -356,30 +371,39 @@ app.get("/elections1/:id/preview",connectEnsureLogin.ensureLoggedIn(), async (re
 
 
 
-app.get('/elections1', connectEnsureLogin.ensureLoggedIn(),async function(request,response){
-  console.log(request.params.id)
-  const elections = await election.findByPk(request.params.id);
-  const questions = await question.getall(elections);
-  const options = await option.findAll({ where: { questionid: questions } });
-  const voters1 = await voters.findAll({ where: { electionid: elections } });
-  const questionscount = await question.countquestions(
-    request.params.id
-  );
-  const voterscount = await voters.countvoters(request.params.id);
-  response.render("elections1", {
-    id: request.params.id,
-    title1: request.params.id.title,
-      elections,
-      questions,
-      options,
-       voters1,
-      questionscount,
-      voterscount, 
-      csrfToken: request.csrfToken(),
+// app.get('/elections1', connectEnsureLogin.ensureLoggedIn(),async function(request,response){
+//   console.log(request.params.id)
+//   const elections = await election.findByPk(request.params.id);
+//   const questions = await question.getall(elections);
+//   const options = await option.findAll({ where: { questionid: questions } });
+//   const voters1 = await voters.findAll({ where: { electionid: elections } });
+//   const questionscount = await question.countquestions(
+//     request.params.id
+//   );
+// const lessoptions=false;
+//   for (let i = 0; i < questions.length; i++) {
+//     const alloptions = await option.getall(questions[i].id);
+//     if(alloptions.length<2)
+//     {
+//       lessoptions=true
+//     }
+//   }
+//   const voterscount = await voters.countvoters(request.params.id);
+//   response.render("elections1", {
+//     id: request.params.id,
+//     title1: request.params.id.title,
+//       elections,
+//       questions,
+//       options,
+//        voters1,
+//        lessoptions,
+//       questionscount,
+//       voterscount, 
+//       csrfToken: request.csrfToken(),
        
   
-});
-});
+// });
+// });
 
 
 
@@ -387,18 +411,29 @@ app.get('/elections1/:id', connectEnsureLogin.ensureLoggedIn(),async function(re
   console.log(request.params.id)
   const Election1 = await election.findByPk(request.params.id);
   const questions = await question.getall(request.params.id);
-  //const options = await option.findAll({ where: { questionid: questions } });
   const voters1 = await voters.findAll({ where: { electionid: request.params.id } });
   const questionscount = await question.countquestions(
     request.params.id
   );
   const voterscount = await voters.countvoters(request.params.id);
+
+let lessoptions=0
+  for (let i = 0; i < questions.length; i++) {
+    const alloptions = await option.getall(questions[i].id);
+    if(alloptions.length<2)
+    {
+      lessoptions=1
+    }
+  }
+
+
   response.render("elections1", { 
     id: request.params.id,
     title1:request.params.id.title,
       Election1,
       questions,
      // options,
+     lessoptions,
        voters1,
       questionscount,
       voterscount, 
@@ -449,7 +484,7 @@ for (let j=0;j<allvoters.length;j++){
     const updatedelection = await Election1.setLaunchedStatus(true);
     response.render("result", {
       id: request.params.id,
-      title1:request.params.id.title,
+      title1:Election1.title,
         Election1,
         data:questions,
         count1,
@@ -894,7 +929,6 @@ app.put('/elections1/:id/options/:rid',connectEnsureLogin.ensureLoggedIn(), asyn
     await option.modifyoption(
       request.body.title,
       request.params.rid,
-     
       request.params.id,
       
       );

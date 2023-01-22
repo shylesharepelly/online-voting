@@ -16,7 +16,7 @@
                   
                 })
                   }).then((res) => {
-                    if(res.ok)
+                    if(res)
                     {
                       window.location.reload();
                     }
@@ -41,12 +41,12 @@
         </div>
              
               <div class="py-2 px-3">
-                <button  name="update" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="" onclick="updateoption(<%=data.id %>,<%= row[i].id %>)">update</a></button>
+          <a class="px-5 py-3 border border-red-300 bg-green-600 hover:bg-green-800 text-white rounded"  href="" onclick="updateoption(<%=data.id %>,<%= row[i].id %>)">update</a>
               </div>
 
               
               <div class="py-2 px-3">
-                <button  name="delete" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="" onclick="removeoption(<%=data.id %>,<%= row[i].id %>)">delete</a></button>
+                <a class="px-5 py-3 border border-red-300 bg-green-600 hover:bg-green-800 text-white rounded"  href="" onclick="removeoption(<%=data.id %>,<%= row[i].id %>)">delete</a>
               </div>
 
 

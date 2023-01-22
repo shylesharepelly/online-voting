@@ -6,9 +6,9 @@
               <label class="ml-1  text-2xl w-full text-black-600 cursor-pointer">
                 <%= data[i].title %>
               </label>
-               
-              <button class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="/elections1/<%= data[i].id%>" name="view" >view</a></button>
+              <button class="bg-green-600 px-5 py-2 hover:bg-green-800 text-xl rounded px-5 py-2 text-white" onclick="window.location.href='/elections1/<%= data[i].id%>';">View
+              </button>
         </div>
       </li>
-      <% } %>
+      <% } %> 
   </ul>

@@ -15,7 +15,8 @@
         <%- include('head.ejs') %>
     </div>
     <div>
-        <button  name="goback" class="text-white bg-green-600 ml-5 hover:bg-green-800 font-medium rounded px-5 py-2"><a href="/elections" class=" px-4  p-2 font-bold text-xl">Go Back</a></button>
+        <button  class="bg-green-600 hover:bg-green-800 text-xl ml-5 rounded px-5 py-2 text-white" onclick="window.location.href='/elections';">Go back
+        </button>
     </div>
     <div class="grid grid-cols-6">
         <div class="col-start-2 col-span-3">
@@ -29,8 +30,14 @@
                     </div>
                 <% } %>
                 
+                <% if(lessoptions==1){ %>
+                    <div class="text-xl font-mono font-bold text-red-600">
+                        <h3>Add atleast two options for question</h3>
+                    </div>
+                <% } %>
                 
-
+                
+ 
                 <div> 
                     <%- include('addquestion.ejs',{Election1,csrfToken}) %>
                 </div>
@@ -61,8 +68,9 @@
                 </div>
                 
                 <br>
+                
                 <div>
-                    <% if(voterscount==0 || questionscount==0){ %>
+                    <% if(voterscount==0 || questionscount==0 || lessoptions==1){ %>
                         
                         <button disabled class="bg-green-600  text-xl rounded px-5 py-2 text-white" onclick="window.location.href='/elections1/<%=Election1.id %>/preview';">Preview election
                         </button>
