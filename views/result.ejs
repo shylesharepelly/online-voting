@@ -49,8 +49,15 @@
     </div>
 
 <div>
-    
-    <% if (Election1.status) { %>
+    <% if (Election1.launched && !Election1.status) { %>
+        <div class="flex justify-center">
+          <p class="text-3xl uppercase text-gray-600 font-bold">This election has Launched.</p>
+        </div>
+        
+        <% } %>
+
+
+    <% if (Election1.status ) { %>
         <div class="flex justify-center">
           <p class="text-3xl uppercase text-gray-600 font-bold">This election has ended.</p>
         </div>
