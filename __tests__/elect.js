@@ -107,7 +107,6 @@ describe("My-Voting-App", function () {
 
 
   test("Creates a new election", async () => {
-    
     const r1 = await login(agent, "user.a@test.com", "12345678");
     let res1 = await agent.get("/new");
     const csrfToken = extractCsrfToken(res1);
@@ -116,9 +115,62 @@ describe("My-Voting-App", function () {
         title: "President elections",
        _csrf: csrfToken,
       });
-      console.log("response",response.text)
+      //console.log("response",response.text)
       expect(response.statusCode).toBe(302);
-
   });
   
+
+  test("Add Questions to election", async () => {
+    const user1 = await login(agent, "user.a@test.com", "12345678");
+    let res1 = await agent.get("/elections");
+    const allElections = await election.findallelections();
+    console.log("Count of elections:", allElections.length);
+    const election1 = allElections[allElections.length - 1]
+
+    let res = await agent.get("/elections1/" + election1.id );
+    let csrfToken = extractCsrfToken(res);
+    console.log("csrftoken 4 " + csrfToken);
+    res = await agent.post("/addquestion/" + election1.id ).send({
+      questiontext: "Who is the mayor",
+      description: "Vote for mayor",
+      _csrf: csrfToken
+    })
+    expect(res.statusCode).toBe(302);
+
+    const questions = await question.findAll();
+    const question1 = questions[questions.length - 1]
+    console.log("csrf token 5 " + csrfToken);
+
+    res = await agent.get("/elections1/" + election1.id+ "/question/"+ question1.id);
+    csrfToken = extractCsrfToken(res);
+
+    res = await agent.post("/elections1/"+ election1.id + "/options/" + question1.id).send({
+      title: "Nani",
+     _csrf: csrfToken,
+      quesid:question1.id
+    })
+    console.log("csrf token 6 " + csrfToken);
+    //console.log("options1",res.text)
+     let optionscount = await option.findAll();
+     console.log("optionss",optionscount.length)
+     expect(optionscount.length).toBe(1);
+
+    res = await agent.get("/elections1/" + election1.id+ "/question/"+ question1.id);
+    csrfToken = extractCsrfToken(res);
+    res = await agent.post("/elections1/"+ election1.id + "/options/" + question1.id).send({
+      title: "Raj",
+      _csrf: csrfToken,
+      quesid:question1.id
+    })
+    console.log("csrf token 7 " + csrfToken);
+    //console.log("options2",res.text)
+     optionscount = await option.findAll();
+    console.log("optionss",optionscount.length)
+    expect(optionscount.length).toBe(2);
+  });
+
+
+
+
+
 });
