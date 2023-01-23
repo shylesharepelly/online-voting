@@ -212,6 +212,24 @@ describe("My-Voting-App", function () {
   });
 
 
+  test("end the election", async () => {
+    const user1 = await login(agent, "user.a@test.com", "12345678");
+    let res1 = await agent.get("/elections");
+    const allElections = await election.findallelections();
+    console.log("Count of elections:", allElections.length);
+    const election1 = allElections[allElections.length - 1]
+    let res = await agent.get("/elections1/" + election1.id );
+    let csrfToken = extractCsrfToken(res);
+    console.log("csrftoken 9 " + csrfToken);
+    res = await agent.put("/election/" + election1.id ).send({
+      status: true,
+      _csrf: csrfToken
+    })
+    expect(res.statusCode).toBe(200);
+    console.log(JSON.parse(res["text"])["status"])
+    const launchedStatus = JSON.parse(res["text"])["status"];
+    expect(launchedStatus).toBe(true);
+  });
 
 
 });
