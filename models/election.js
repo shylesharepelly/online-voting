@@ -81,7 +81,14 @@ module.exports = (sequelize, DataTypes) => {
 
   
   election.init({
-    title: DataTypes.STRING,
+    
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true
+          }
+    },
     status: DataTypes.BOOLEAN,
     start: DataTypes.DATE,
     end: DataTypes.DATE,

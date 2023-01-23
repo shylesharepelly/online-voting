@@ -68,7 +68,13 @@ module.exports = (sequelize, DataTypes) => {
 
   }
   voters.init({
-    email: DataTypes.STRING,
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true
+          }
+    },
     password: DataTypes.STRING
   }, {
     sequelize,

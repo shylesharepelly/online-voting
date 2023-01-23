@@ -74,7 +74,13 @@ module.exports = (sequelize, DataTypes) => {
 
 
   option.init({
-    option: DataTypes.STRING
+    option: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true
+          }
+    },
   }, {
     sequelize,
     modelName: 'option',

@@ -121,6 +121,4 @@ describe("My-Voting-App", function () {
 
   });
   
-
-
 });

@@ -22,7 +22,13 @@ module.exports = (sequelize, DataTypes) => {
   admin.init({
     firstname: DataTypes.STRING,
     lastname: DataTypes.STRING,
-    email: DataTypes.STRING,
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true
+          }
+    },
     password: DataTypes.STRING
   }, {
     sequelize,
