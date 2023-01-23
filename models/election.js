@@ -28,7 +28,9 @@ module.exports = (sequelize, DataTypes) => {
       return this.create({ title: title, status: false,launched:false,adminId:adminId});
     }
 
-
+    static async findallelections() {
+      return this.findAll();
+    }
 
     static async newelections(id) {
       return this.findAll({

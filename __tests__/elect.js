@@ -5,10 +5,11 @@ const cheerio = require("cheerio");
 const db = require("../models/index");
 const app = require("../app");
 let server, agent;
+const { election, admin, option, voters, votes, question} = require("../models");
 
 function extractCsrfToken(res) {
   var $ = cheerio.load(res.text);
-  console.log("ccc",$("[name=_csrf]"))
+  //console.log("ccc",$("[name=_csrf]"))
   return $("[name=_csrf]").val();
 }
 
@@ -23,6 +24,7 @@ let login = async (agent, username, password) => {
     password: password,
     _csrf: csrfToken
   });
+  return res;
   //console.log("res0", res);
 
 }
@@ -54,11 +56,6 @@ describe("My-Voting-App", function () {
     })
     console.log("res-sign:", res.text);
     expect(res.statusCode).toBe(302);
-
-    // await login(agent, "user.a@test.com", "12345678");
-    // const res1 = await agent.get("/elections");
-    // //console.log("res1",res1.text)
-    // const csrfToken = extractCsrfToken(res1);
     
   });
 
@@ -73,7 +70,7 @@ describe("My-Voting-App", function () {
 
 
 
-  test("User signout", async () => {
+  test("Sign up for first user signout", async () => {
     let res = await agent.get("/elections");
     expect(res.statusCode).toBe(200);
     res = await agent.get("/signout");
@@ -111,7 +108,7 @@ describe("My-Voting-App", function () {
 
   test("Creates a new election", async () => {
     
-    await login(agent, "user.a@test.com", "12345678");
+    const r1 = await login(agent, "user.a@test.com", "12345678");
     let res1 = await agent.get("/new");
     const csrfToken = extractCsrfToken(res1);
       console.log("csrf3",csrfToken)
