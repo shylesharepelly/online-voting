@@ -12,6 +12,17 @@
 </head>
 
 <body>
+
+    <div class="text-red-600 ml-5 font-bold text-2xl">
+                
+        <% if(messages && messages.error && messages.error.length > 0)  { %>
+            <% for(var i=0; i<messages.error.length; i++) { %>
+                    <li> <%= messages.error[i] %></li>
+            <% } %>
+          <% } %>
+      </div>
+
+
                     <form action="/addvoters/<%=Election1.id %>" method="post">
                         <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
 
@@ -19,11 +30,11 @@
                              
                             <div class="py-2">
                                 <label for="voterid" >VoterId</label>
-                                <input type="text" name="voterid" required placeholder="Voter ID" class="border border-gray-600 rounded text-gray-900 wp-content p-2 text-sm" />
+                                <input type="text" name="voterid" placeholder="Voter ID" class="border border-gray-600 rounded text-gray-900 wp-content p-2 text-sm" />
                             </div>
                             <div class="py-2">
                                 <label for="password">Password</label>
-                                <input type="password" name="password" required placeholder="Password" class="border border-gray-600 rounded text-gray-900 wp-content p-2 text-sm" />
+                                <input type="password" name="password" placeholder="Password" class="border border-gray-600 rounded text-gray-900 wp-content p-2 text-sm" />
                             </div>
                             <div class="py-2">
                                 <button type="submit" class="text-white bg-green-600 hover:bg-green-800 font-medium rounded px-5 py-2">Add Voter</button>

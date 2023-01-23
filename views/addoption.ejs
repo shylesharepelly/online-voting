@@ -111,19 +111,21 @@ var token = document.querySelector('meta[name="csrf-token"]').getAttribute('cont
 <div>
   <%- include('option.ejs',{row:options , data}) %>
 </div> 
-
-          <% if(messages && messages.error && messages.error.length > 0)  { %>
-            <% for(var i=0; i<messages.error.length; i++) { %>
-                    <li> <%= messages.error[i] %></li>
-            <% } %>
-          <% } %>
+<div class="text-red-600 ml-5 font-bold text-2xl">
+                
+  <% if(messages && messages.error && messages.error.length > 0)  { %>
+      <% for(var i=0; i<messages.error.length; i++) { %>
+              <li> <%= messages.error[i] %></li>
+      <% } %>
+    <% } %>
+</div>
           </div> 
           <form action="/elections1/<%=id%>/options/<%=quesid%>" method="post" onsubmit="validate()">
             <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
-
+ 
               <div class="flex gap-2 p-4">
                   <div class="flex-auto">
-                      <input type="text" title="Enter atleast 2 characters.Remove space in the beginning"  name="title" placeholder="add option" class=" ml-6 border border-gray-300 rounded text-gray-900  p-2 text-sm" required/>
+                      <input type="text" title="Enter atleast 2 characters.Remove space in the beginning"  name="title" placeholder="add option" class=" ml-6 border border-gray-300 rounded text-gray-900  p-2 text-sm" />
                       <button type="submit"   class="bg-green-600 text-white px-5 py-2 rounded font-medium py-1.5">Add Option</button>
               
                     </div>

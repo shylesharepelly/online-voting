@@ -21,6 +21,16 @@
         <div class="col-start-3 col-span-2">
             <h6 class="py-4 text-4xl font-bold">Create New Election</h6>
             
+
+            <div class="text-red-600 ml-5 font-bold text-2xl">
+                
+                <% if(messages && messages.error && messages.error.length > 0)  { %>
+                    <% for(var i=0; i<messages.error.length; i++) { %>
+                            <li> <%= messages.error[i] %></li>
+                    <% } %>
+                  <% } %>
+            </div>
+
             <form action="/elections/new" method="post">
                 <input type="hidden" name="_csrf" value="<%=csrfToken %>" />
  

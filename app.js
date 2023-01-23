@@ -286,6 +286,10 @@ app.delete("/election/:id",connectEnsureLogin.ensureLoggedIn(), async (request, 
 app.post("/elections/new", async (request, response)=> {
   const title1= request.body.title;
   const loggedInUser = request.user.id;
+  if (!title1) {
+    request.flash("error", "Please make sure you enter title of the election");
+    return response.redirect("/new");
+  }
   try {
     const Election1=await election.addelection({
       title:request.body.title,
@@ -578,14 +582,21 @@ console.log("count",count1)
 
 app.post("/addvoters/:id", async (request,response)=>{
 
-  const hashedpwd = await bcrypt.hash(request.body.password,saltRounds)
-  
   const email=request.body.voterid
   const Election1 = await election.findByPk(request.params.id);
   console.log(email)
   console.log("newelec", request.params.id)
+
+  if (!email) {
+    request.flash("error", "Please make sure you enter voterId");
+    return response.redirect(`/elections1/${request.params.id}`);
+  }
+  if (!request.body.password) {
+    request.flash("error", "Please make sure you enter Voter password");
+    return response.redirect(`/elections1/${request.params.id}`);
+  }
+  const hashedpwd = await bcrypt.hash(request.body.password,saltRounds)
 try{
-  
   const voters1 = await voters.addvoters({
     email:email,
     password:hashedpwd,
@@ -608,6 +619,7 @@ request.flash("error", error.message);
 }
 
 });
+
 
 app.get('/elections1/:id/voters',connectEnsureLogin.ensureLoggedIn(), async function(request,response){
   const election1 = await election.findByPk(request.params.id);
@@ -663,36 +675,7 @@ app.get('/new',connectEnsureLogin.ensureLoggedIn(),function(req,res){
     res.render('new',{csrfToken: req.csrfToken()});
 });
 
-app.post("/addvoters/:id", async (request,response)=>{
-  const hashedpwd = await bcrypt.hash(request.body.password,saltRounds)
-  const email=request.body.voterid
-  const Election1 = await election.findByPk(request.params.id);
-  console.log(email)
-  console.log("newelec", request.params.id)
-  
-try{
-  const voters1 = await voters.addvoters({
-    email:email,
-    password:hashedpwd,
-    electionid:request.params.id,
-    
-  });
-  
-  if (request.accepts("html")) {
-    console.log("Html Request");
-    return response.redirect(`/elections1/${request.params.id}/voters`);
-}
-else {
-    return response.json(voters1);
-}
-  
-}
-catch(error){
-console.log(error);
-request.flash("error", error.message);
-}
 
-});
 
 app.get('/elections1/:id/question',connectEnsureLogin.ensureLoggedIn(), async function(request,response){
   const election1 = await election.findByPk(request.params.id);
@@ -725,7 +708,11 @@ app.post("/addquestion/:id",connectEnsureLogin.ensureLoggedIn(),async (request, 
 });
 
 app.post("/elections1/:id/options/:quesid",connectEnsureLogin.ensureLoggedIn(),async (request, response)=> {
-  
+  const t1= request.body.title;
+  if (!t1) {
+    request.flash("error", "Please make sure you enter option name");
+    return response.redirect(`/elections1/${request.params.id}/question/${request.params.quesid}`);
+  }
   try {
     await option.addoption(
       request.body.title,
