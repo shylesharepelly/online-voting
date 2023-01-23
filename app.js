@@ -231,6 +231,7 @@ console.log("new user")
       newelections1,
       ongoing1,
       completed1,
+      csrfToken: request.csrfToken(),
     })
   }
 });

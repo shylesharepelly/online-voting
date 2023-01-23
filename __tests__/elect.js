@@ -8,25 +8,28 @@ let server, agent;
 
 function extractCsrfToken(res) {
   var $ = cheerio.load(res.text);
+  console.log("ccc",$("[name=_csrf]"))
   return $("[name=_csrf]").val();
 }
 
 
 
 let login = async (agent, username, password) => {
-  let res = await agent.get("/login");
-  const csrfToken = extractCsrfToken(res);
+  let res = await agent.get("/admin-login");
+  let csrfToken = extractCsrfToken(res);
+  console.log("Csrf2",csrfToken)
   res = await agent.post("/session").send({
     email: username,
     password: password,
     _csrf: csrfToken
   });
+  //console.log("res0", res);
 
 }
 describe("My-Voting-App", function () {
   beforeAll(async () => {
     await db.sequelize.sync({ force: true });
-    server = app.listen(3000, () => { });
+    server = app.listen(4000, () => { });
     agent = request.agent(server);
   });
 
@@ -41,24 +44,45 @@ describe("My-Voting-App", function () {
   test("Sign up for first user", async () => {
     let res = await agent.get("/signup");
     const csrfToken = extractCsrfToken(res);
+    console.log("Csrf1",csrfToken)
     res = await agent.post("/users").send({
-      firstName: "Test",
-      lastName: "User A",
+      firstname: "Test",
+      lastname: "User A",
       email: "user.a@test.com",
       password: "12345678",
       _csrf: csrfToken
     })
+    console.log("res-sign:", res.text);
+    expect(res.statusCode).toBe(302);
+
+    // await login(agent, "user.a@test.com", "12345678");
+    // const res1 = await agent.get("/elections");
+    // //console.log("res1",res1.text)
+    // const csrfToken = extractCsrfToken(res1);
+    
+  });
+
+  // test("Sign Out for first user", async () => {
+  //   let res = await agent.get("/elections");
+  //   const csrfToken = extractCsrfToken(res);
+  //   res = await agent.get("/signout").send({
+  //     _csrf: csrfToken
+  //   })
+  //   expect(res.statusCode).toBe(302);
+  // });
+
+
+
+  test("User signout", async () => {
+    let res = await agent.get("/elections");
+    expect(res.statusCode).toBe(200);
+    res = await agent.get("/signout");
+    expect(res.statusCode).toBe(302);
+    res = await agent.get("/elections");
     expect(res.statusCode).toBe(302);
   });
 
-  test("Sign Out for first user", async () => {
-    let res = await agent.get("/elections");
-    const csrfToken = extractCsrfToken(res);
-    res = await agent.get("/signout").send({
-      _csrf: csrfToken
-    })
-    expect(res.statusCode).toBe(302);
-  });
+
 
   test("Sign up for second user", async () => {
     let response = await agent.get("/signup");
@@ -85,6 +109,21 @@ describe("My-Voting-App", function () {
   })
 
 
-}
+  test("Creates a new election", async () => {
+    
+    await login(agent, "user.a@test.com", "12345678");
+    let res1 = await agent.get("/new");
+    const csrfToken = extractCsrfToken(res1);
+      console.log("csrf3",csrfToken)
+      const response = await agent.post("/elections/new").send({
+        title: "President elections",
+       _csrf: csrfToken,
+      });
+      console.log("response",response.text)
+      expect(response.statusCode).toBe(302);
 
-);
+  });
+  
+
+
+});
