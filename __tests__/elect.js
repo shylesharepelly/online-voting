@@ -374,6 +374,33 @@ describe("My-Voting-App", function () {
   });
 
 
+  test("delete 2st Voter", async () => {
+    const user1 = await login(agent, "user.a@test.com", "12345678");
+    let res1 = await agent.get("/elections");
+    const allElections = await election.findallelections();
+    //console.log("Count of elections:", allElections.length);
+    const election1 = allElections[allElections.length - 1]
+
+    let res = await agent.get("/elections1/" + election1.id );
+    let csrfToken = extractCsrfToken(res);
+    //console.log("csrftoken 8 " + csrfToken);
+    let voterscount  = await voters.findAll();
+    expect(voterscount.length).toBe(2);
+    const voter1 = voterscount[voterscount.length - 1]
+
+    
+    res = await agent.delete("/elections1/"+election1.id + "/" +voter1.id).send({
+      id:election1.id,
+      voterId:voter1.id,
+      _csrf: csrfToken
+    })
+    console.log("voter delete",res.text)
+    voterscount  = await voters.findAll();
+    expect(voterscount.length).toBe(1);
+  });
+
+
+
 
   test("launch the election", async () => {
     const user1 = await login(agent, "user.a@test.com", "12345678");
