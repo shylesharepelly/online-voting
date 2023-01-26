@@ -28,6 +28,20 @@ let login = async (agent, username, password) => {
   //console.log("res0", res);
 
 }
+let login1 = async (agent, username, password,eid) => {
+  let res = await agent.get("/elections1/" + eid +"/voting");
+  let csrfToken = extractCsrfToken(res);
+  console.log("Csrf voter",csrfToken)
+  res = await agent.post("/session1").send({
+    email: username,
+    password: password,
+    _csrf: csrfToken
+  });
+  return res;
+  //console.log("res0", res);
+
+}
+
 describe("My-Voting-App", function () {
   beforeAll(async () => {
     await db.sequelize.sync({ force: true });
@@ -119,7 +133,7 @@ describe("My-Voting-App", function () {
       expect(response.statusCode).toBe(302);
   });
   
-
+//there is a constraint to add atleast 1 question with atleast 2 options and atleast 1 voter for launching election
   test("Add 1st Question and 3 options  to election", async () => {
     const user1 = await login(agent, "user.a@test.com", "12345678");
     let res1 = await agent.get("/elections");
@@ -247,8 +261,6 @@ describe("My-Voting-App", function () {
 
   });
 
-
-
   test("add 2nd Question and options to election", async () => {
     const user1 = await login(agent, "user.a@test.com", "12345678");
     let res1 = await agent.get("/elections");
@@ -298,9 +310,6 @@ describe("My-Voting-App", function () {
     expect(optionscount.length).toBe(4);
   });
 
-
-
-
   test("delete 2nd Question from election", async () => {
     const user1 = await login(agent, "user.a@test.com", "12345678");
     let res1 = await agent.get("/elections");
@@ -328,8 +337,6 @@ describe("My-Voting-App", function () {
     expect(optionscount.length).toBe(2);
   });
 
-
-
   test("Adding 1st Voter", async () => {
     const user1 = await login(agent, "user.a@test.com", "12345678");
     let res1 = await agent.get("/elections");
@@ -349,7 +356,6 @@ describe("My-Voting-App", function () {
     expect(res.statusCode).toBe(302);
   });
 
-  
   test("Adding 2st Voter", async () => {
     const user1 = await login(agent, "user.a@test.com", "12345678");
     let res1 = await agent.get("/elections");
@@ -372,7 +378,6 @@ describe("My-Voting-App", function () {
     voterscount  = await voters.findAll();
     expect(voterscount.length).toBe(2);
   });
-
 
   test("delete 2st Voter", async () => {
     const user1 = await login(agent, "user.a@test.com", "12345678");
@@ -399,9 +404,6 @@ describe("My-Voting-App", function () {
     expect(voterscount.length).toBe(1);
   });
 
-
-
-
   test("launch the election", async () => {
     const user1 = await login(agent, "user.a@test.com", "12345678");
     let res1 = await agent.get("/elections");
@@ -419,6 +421,51 @@ describe("My-Voting-App", function () {
     //console.log(JSON.parse(res["text"])["launched"])
     const launchedStatus = JSON.parse(res["text"])["launched"];
     expect(launchedStatus).toBe(true);
+    
+  });
+
+  
+  test("voter login  and cast vote for the election", async () => {
+    //const user1 = await login(agent, "user.a@test.com", "12345678");
+    let res1 = await agent.get("/elections");
+    const allElections = await election.findallelections();
+    console.log("Count of elections:", allElections.length);
+    const election1 = allElections[allElections.length - 1]
+    let eid = election1.id
+    let res = await agent.get("/elections1/" + election1.id );
+    let csrfToken = extractCsrfToken(res);
+    await agent.get("/signout");
+    res = await agent.get("/elections1/" + election1.id +"/voting");
+    //const voter1 = await login1(agent, "test1@gmail.com", "test", eid);
+    csrfToken = extractCsrfToken(res);
+    const voter1 = await agent.post("/elections1/"+ election1.id + "/vote").send({
+      email: "test1@gmail.com",
+      password:"test",
+      _csrf: csrfToken,
+    })
+    //console.log("voter",voter1.text)
+    expect(voter1.statusCode).toBe(302);
+
+    
+//     const questions = await question.findAll();
+//     const question1 = questions[questions.length - 1]
+
+//     const optionsall = await option.findAll();
+//     const option1 = optionsall[optionsall.length - 1]
+    
+//     res = await agent.get("/elections1/" + election1.id + "/vote" );
+//     csrfToken = extractCsrfToken(res);
+// console.log("option id",option1.id)
+    
+//     res = await agent.post("/elections1/"+ election1.id + "/addvote").send({
+//       voterid: voter1.id,
+//       questionid:question1.id,
+//       optionid:option1.id,
+//       _csrf: csrfToken
+//     })
+//     expect(res.statusCode).toBe(302);
+//     console.log("vote",res.text)
+
   });
 
 
