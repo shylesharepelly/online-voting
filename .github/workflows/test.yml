@@ -1,4 +1,4 @@
-name: online-voing App Test
+name: online-voing App auto Test
 on: push
 env:
   PG_DATABASE: voting-db
