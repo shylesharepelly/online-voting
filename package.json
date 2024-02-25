@@ -8,7 +8,18 @@
     "start:prod": "node index.js",
     "pretest": "NODE_ENV=test npx sequelize-cli db:drop && NODE_ENV=test npx sequelize-cli db:create",
     "test": "NODE_ENV=test jest --detectOpenHandles",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "lint": "eslint ."
+  },
+  "lint-staged": {
+    "*.ejs": [
+      "eslint",
+      "prettier --write ."
+    ],
+    "*.js": [
+      "eslint",
+      "prettier --write ."
+    ]
   },
   "author": "shylesharepelly@gmail.com",
   "license": "ISC",
