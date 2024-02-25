@@ -64,7 +64,7 @@ jobs:
           node-version: '14'
       - name: Install dependencies
         run: |
-          cd online-voting
+          cd ..
           npm ci
       - name: Run tests
         run: npm test
