@@ -75,7 +75,8 @@ jobs:
           npx sequelize-cli db:drop
           npx sequelize-cli db:create
           npx sequelize-cli db:migrate
-          PORT=3000 npm start 
+          PORT=3000 npm start &
+          sleep 5
 
   test-notifications:
     name: Test Notifications
