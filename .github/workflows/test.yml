@@ -1,29 +1,27 @@
 name: CICD Pipeline 
 on:
-  push:
+  push:  # On every pushed code to the repository , it triggers the workflow
     branches:
       - main
 
-jobs:
-  validation:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
 
+jobs:
+  validation:  #code validation 
+    runs-on: ubuntu-latest #define the operating system
+    steps:
+      - name: Checkout repository 
+        uses: actions/checkout@v2   #downloads a copy of code
       - name: Install Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v2  #for setting up nodeJS environment
         with:
           node-version: '14'
-
-      - name: Install dependencies
-        run: npm ci
-
+      - name: Install dependencies  
+        run: npm ci   #perform clean installation of all dependencies  listed in package.json file
       - name: Code linting and formatting
-        run: npm run lint
+        run: npm run lint #run the command specified in scripts section of package.json to check for any errors or warnings
         
   notifications-codevalidation:
-    name: Code validation Notification
+    name: Code validation Notification   # a notification  step that will be executed after the "validations"
     needs: validation 
     runs-on: ubuntu-latest
     if: ${{ always() }}
@@ -37,20 +35,18 @@ jobs:
           else
             curl -X POST -H 'Content-type: application/json' --data '{"content":" *Code validation* failed. \nCheck the logs for details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' $DISCORD_WEBHOOKURL
           fi  
-                
-                
+                    
 
-  build_and_run_tests:
-    runs-on: ubuntu-latest
-
+  build_and_run_tests: 
+    runs-on: ubuntu-latest #specifies which runner to use for this job
     services:
       postgres:
         image: postgres:11.7
-        env:
+        env: #environment variables for postgresql configuration
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD:  ${{secrets.pg_password }}
           POSTGRES_DB: voting_db
-        options: >-
+        options: >-   #setting health checkups  for PostgreSQL service
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
@@ -67,7 +63,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run tests
-        run: npm test
+        run: npm test   #command for running all unit  tests in the project
       - name: Run the app
         id: run-app
         run: |
@@ -79,7 +75,7 @@ jobs:
           sleep 5
 
   test-notifications:
-    name: Test Notifications
+    name: Test Notifications  #notifications after  completion of a unit tests
     needs: build_and_run_tests
     runs-on: ubuntu-latest
     if: ${{ always() }} 
@@ -93,20 +89,20 @@ jobs:
           else
             curl -X POST -H 'Content-type: application/json' --data '{"content":" *Test cases* failed. \nCheck the logs for details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' $DISCORD_WEBHOOKURL
           fi
-  
-    
+
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  
     needs: build_and_run_tests
     steps:
       - name: Deploy to render 
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
-          service-id: ${{ secrets.RENDER_SERVICEID}}
-          api-key: ${{ secrets.API_TOKEN }}
+          service-id: ${{ secrets.RENDER_SERVICEID}}  #render serviceid  provided by Render
+          api-key: ${{ secrets.API_TOKEN }}    #api key  provided by Render
+
 
   deploy-notifications:
-    name: Deployment Notifications
+    name: Deployment Notifications   #notification for deployment results
     needs: deploy
     runs-on: ubuntu-latest
     if: ${{ always() }} 
