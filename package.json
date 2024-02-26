@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon -e js,ejs",
+    "dev": "npx pm2 start ecosystem.config.js --env production",
     "start:prod": "node index.js",
     "pretest": "NODE_ENV=test npx sequelize-cli db:drop && NODE_ENV=test npx sequelize-cli db:create",
     "test": "NODE_ENV=test jest --detectOpenHandles",
