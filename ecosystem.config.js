@@ -1,5 +1,7 @@
-module.exports = {
-    apps: [
+module.exports = 
+{
+    apps: 
+    [
       {
         name: 'online-voting',
         script: 'index.js',
@@ -13,5 +15,5 @@ module.exports = {
         },
       },
     ],
-  };
+};
   
