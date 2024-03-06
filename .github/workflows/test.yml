@@ -125,7 +125,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest  
-    needs: build_and_run_tests
+    needs: docker
     steps:
       - name: Deploy to render 
         uses: johnbeynon/render-deploy-action@v0.0.8
