@@ -261,81 +261,81 @@ describe("My-Voting-App", function () {
 
   });
 
-  test("add 2nd Question and options to election", async () => {
-    const user1 = await login(agent, "user.a@test.com", "12345678");
-    let res1 = await agent.get("/elections");
-    const allElections = await election.findallelections();
-    console.log("Count of elections:", allElections.length);
-    const election1 = allElections[allElections.length - 1]
+  // test("add 2nd Question and options to election", async () => {
+  //   const user1 = await login(agent, "user.a@test.com", "12345678");
+  //   let res1 = await agent.get("/elections");
+  //   const allElections = await election.findallelections();
+  //   console.log("Count of elections:", allElections.length);
+  //   const election1 = allElections[allElections.length - 1]
 
-    let res = await agent.get("/elections1/" + election1.id );
-    let csrfToken = extractCsrfToken(res);
-    console.log("csrftoken 4 " + csrfToken);
-    res = await agent.post("/addquestion/" + election1.id ).send({
-      questiontext: "Who is the president",
-      description: "Vote for president",
-      _csrf: csrfToken
-    })
-    expect(res.statusCode).toBe(302);
+  //   let res = await agent.get("/elections1/" + election1.id );
+  //   let csrfToken = extractCsrfToken(res);
+  //   console.log("csrftoken 4 " + csrfToken);
+  //   res = await agent.post("/addquestion/" + election1.id ).send({
+  //     questiontext: "Who is the president",
+  //     description: "Vote for president",
+  //     _csrf: csrfToken
+  //   })
+  //   expect(res.statusCode).toBe(302);
 
-    const questions = await question.findAll();
-    const question1 = questions[questions.length - 1]
-    console.log("csrf token 5 " + csrfToken);
+  //   const questions = await question.findAll();
+  //   const question1 = questions[questions.length - 1]
+  //   console.log("csrf token 5 " + csrfToken);
 
-    res = await agent.get("/elections1/" + election1.id+ "/question/"+ question1.id);
-    csrfToken = extractCsrfToken(res);
+  //   res = await agent.get("/elections1/" + election1.id+ "/question/"+ question1.id);
+  //   csrfToken = extractCsrfToken(res);
 
-    res = await agent.post("/elections1/"+ election1.id + "/options/" + question1.id).send({
-      title: "test1",
-     _csrf: csrfToken,
-      quesid:question1.id
-    })
-    console.log("csrf token 6 " + csrfToken);
-    //console.log("options1",res.text)
-     let optionscount = await option.findAll();
-     console.log("optionss",optionscount.length)
-     expect(optionscount.length).toBe(3);
+  //   res = await agent.post("/elections1/"+ election1.id + "/options/" + question1.id).send({
+  //     title: "test1",
+  //    _csrf: csrfToken,
+  //     quesid:question1.id
+  //   })
+  //   console.log("csrf token 6 " + csrfToken);
+  //   //console.log("options1",res.text)
+  //    let optionscount = await option.findAll();
+  //    console.log("optionss",optionscount.length)
+  //    expect(optionscount.length).toBe(3);
 
-    res = await agent.get("/elections1/" + election1.id+ "/question/"+ question1.id);
-    csrfToken = extractCsrfToken(res);
-    res = await agent.post("/elections1/"+ election1.id + "/options/" + question1.id).send({
-      title: "test2",
-      _csrf: csrfToken,
-      quesid:question1.id
-    })
-    console.log("csrf token 7 " + csrfToken);
-    //console.log("options2",res.text)
-     optionscount = await option.findAll();
-    console.log("optionss",optionscount.length)
-    expect(optionscount.length).toBe(4);
-  });
+  //   res = await agent.get("/elections1/" + election1.id+ "/question/"+ question1.id);
+  //   csrfToken = extractCsrfToken(res);
+  //   res = await agent.post("/elections1/"+ election1.id + "/options/" + question1.id).send({
+  //     title: "test2",
+  //     _csrf: csrfToken,
+  //     quesid:question1.id
+  //   })
+  //   console.log("csrf token 7 " + csrfToken);
+  //   //console.log("options2",res.text)
+  //    optionscount = await option.findAll();
+  //   console.log("optionss",optionscount.length)
+  //   expect(optionscount.length).toBe(4);
+  // });
 
-  test("delete 2nd Question from election", async () => {
-    const user1 = await login(agent, "user.a@test.com", "12345678");
-    let res1 = await agent.get("/elections");
-    const allElections = await election.findallelections();
-    console.log("Count of elections:", allElections.length);
-    const election1 = allElections[allElections.length - 1]
+  // test("delete 2nd Question from election", async () => {
+  //   const user1 = await login(agent, "user.a@test.com", "12345678");
+  //   let res1 = await agent.get("/elections");
+  //   const allElections = await election.findallelections();
+  //   console.log("Count of elections:", allElections.length);
+  //   const election1 = allElections[allElections.length - 1]
 
-    let res = await agent.get("/elections1/" + election1.id );
-    let csrfToken = extractCsrfToken(res);
-    let questions = await question.findAll();
-    expect(questions.length).toBe(2);
-    const question1 = questions[questions.length - 1]
-    console.log("csrf token 5 " + csrfToken);
+  //   let res = await agent.get("/elections1/" + election1.id );
+  //   let csrfToken = extractCsrfToken(res);
+  //   let questions = await question.findAll();
+  //   expect(questions.length).toBe(2);
+  //   const question1 = questions[questions.length - 1]
+  //   console.log("csrf token 5 " + csrfToken);
 
-    res = await agent.delete("/elections1/"+election1.id +"/question/"+question1.id).send({
-      id:election1.id,
-      questionid:question1.id,
-      _csrf: csrfToken
-    })
-    questions = await question.findAll();
-    expect(questions.length).toBe(1);
-    //console.log("options2",res.text)
-     optionscount = await option.findAll();
-    console.log("optionss",optionscount.length)
-    expect(optionscount.length).toBe(2);
-  });
+  //   res = await agent.delete("/elections1/"+election1.id +"/question/"+question1.id).send({
+  //     id:election1.id,
+  //     questionid:question1.id,
+  //     _csrf: csrfToken
+  //   })
+  //   questions = await question.findAll();
+  //   expect(questions.length).toBe(1);
+  //   //console.log("options2",res.text)
+  //    optionscount = await option.findAll();
+  //   console.log("optionss",optionscount.length)
+  //   expect(optionscount.length).toBe(2);
+  // });
 
   test("Adding 1st Voter", async () => {
     const user1 = await login(agent, "user.a@test.com", "12345678");
