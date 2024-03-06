@@ -89,6 +89,40 @@ jobs:
             curl -X POST -H 'Content-type: application/json' --data '{"content":" *Test cases* failed. \nCheck the logs for details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' $DISCORD_WEBHOOKURL
           fi
 
+  docker:
+    runs-on: ubuntu-latest #specifies which runner to use for this job
+    needs: build_and_run_tests
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/onlinevotingapp:latest .
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/onlinevotingapp:latest
+    
+
+  docker-notifications:
+    name: docker Notifications   #notification for docker build results
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: ${{ always() }} 
+    steps:
+      - name: docker build results notifications on Discord
+        env:
+          DISCORD_WEBHOOKURL: ${{ secrets.DISCORD_WEBHOOKURL }}
+        run: |
+          if [[ ${{ needs.docker.result }} == 'success' ]]; then
+            curl -X POST -H 'Content-type: application/json' --data '{"content":" *docker build of the application* completed successfully. \nCheck the logs for details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' $DISCORD_WEBHOOKURL
+          else
+            curl -X POST -H 'Content-type: application/json' --data '{"content":" *docker build* failed. \nCheck the logs for details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' $DISCORD_WEBHOOKURL
+          fi
+        
+
+
   deploy:
     runs-on: ubuntu-latest  
     needs: build_and_run_tests

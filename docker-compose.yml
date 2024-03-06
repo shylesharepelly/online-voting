@@ -1,0 +1,29 @@
+version: '1'
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    image: online-voting:development 
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    depends_on:
+      - db
+  db:
+    image: postgres:14
+    volumes:
+      - pg-prod-data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: $DEV_USERNAME
+      POSTGRES_DB: $DEV_DATABASE
+      POSTGRES_PASSWORD: $DEV_PASSWORD
+    ports:
+      - 5435:5432
+    expose:
+      - "5435"
+volumes:
+  pg-prod-data:
