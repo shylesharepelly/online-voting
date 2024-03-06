@@ -3,14 +3,14 @@
     "username": "postgres",
     "password": "postgres",
     "database": "voting_app",
-    "host": "db",
+    "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
     "username": "postgres",
     "password": "postgres",
     "database": "voting_app_test",
-    "host": "db",
+    "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
