@@ -107,7 +107,7 @@ jobs:
 
   docker-notifications:
     name: docker Notifications   #notification for docker build results
-    needs: deploy
+    needs: docker
     runs-on: ubuntu-latest
     if: ${{ always() }} 
     steps:
